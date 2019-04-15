@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
-# telnet_ip5v.py
+# telnet_client.py
 #
-# Telnet client for IP 5V switch application hosted by RPi
+# Telnet client for applications hosted on RPi's
 # 
 # Copyright (C) 2019 by G3UKB Bob Cowdery
 # This program is free software; you can redistribute it and/or modify
@@ -25,29 +25,36 @@
 
 import telnetlib
 from time import sleep
+import telnet_config
 import telnet_base
 
 #=====================================================
 # A threaded telnet session for the IP5V RPi
 #=====================================================
-class TelnetIP5v(telnet_base.TelnetBase):
+class TelnetClient(telnet_base.TelnetBase):
     
     #-------------------------------------------------
     # Constructor
-    def __init__(self):
+    def __init__(self, target):
       
-      super(TelnetIP5v, self).__init__('192.168.1.109', 'pi', 'raspberry')
+      self.__target = target
+      self.__config = telnet_config.telnet_config[target]
+      host = self.__config["HOST"]
+      user = self.__config["USER"]
+      password = self.__config["PASSWORD"]
+      super(TelnetClient, self).__init__(host, user, password)
       
     #-------------------------------------------------
     # Thread entry point
     def run(self):
-       self.execute('cd /home/pi/Projects/IP5vSwitch/src/python', '$')
-       self.execute('python3 ip5v_web.py', '$')
-       print('Started IP5V Switch application...')
-       # Wait for the exit event
-       self.telnet_evt.wait()
-       self.close()
-       print("Telnet session terminated")
+        
+        for cmd in self.__config["CMD_SEQ"]:
+            self.execute(cmd[0], cmd[1])
+        print('Started %s application...' % (self.__target))
+        # Wait for the exit event
+        self.telnet_evt.wait()
+        self.close()
+        print("Telnet session for application %s terminated" % (self.__target))
     
     #-------------------------------------------------
     # Terminate the session  
@@ -55,14 +62,12 @@ class TelnetIP5v(telnet_base.TelnetBase):
        self.telnet_evt.set() 
     
 #==============================================================================================
-# Main code
+# Test code
 #==============================================================================================
 # Entry point
 if __name__ == '__main__':
     
-    global telnet_evt
-    
-    client = TelnetIP5v()
+    client = TelnetClient("IP5VSwitch")
     client.start()
     sleep(20)
     client.terminate()

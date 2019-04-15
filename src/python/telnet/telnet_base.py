@@ -2,7 +2,7 @@
 #
 # telnet_base.py
 #
-# Telnet base class for Launcher application
+# Telnet base class for IP 5V switch application hosted by RPi
 # 
 # Copyright (C) 2019 by G3UKB Bob Cowdery
 # This program is free software; you can redistribute it and/or modify
@@ -37,7 +37,6 @@ class TelnetBase(threading.Thread):
     def __init__(self, host, user, password):
         # Init base
         threading.Thread.__init__(self)
-        
         # Ensure the event is clear
         self.telnet_evt = threading.Event()
         self.telnet_evt.clear()
