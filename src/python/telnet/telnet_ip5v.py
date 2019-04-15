@@ -23,20 +23,20 @@
 #     bob@bobcowdery.plus.com
 #
 
-import threading
+import telnetlib
 from time import sleep
 import telnet_base
 
 #=====================================================
 # A threaded telnet session for the IP5V RPi
 #=====================================================
-class TelnetIP5v(TelnetBase):
+class TelnetIP5v(telnet_base.TelnetBase):
     
     #-------------------------------------------------
     # Constructor
     def __init__(self):
       
-      super(TelnetBase, self).__init__('192.168.1.109', 'pi', 'raspberry')
+      super(TelnetIP5v, self).__init__('192.168.1.109', 'pi', 'raspberry')
       
     #-------------------------------------------------
     # Thread entry point
@@ -44,17 +44,26 @@ class TelnetIP5v(TelnetBase):
        self.execute('cd /home/pi/Projects/IP5vSwitch/src/python', '$')
        self.execute('python3 ip5v_web.py', '$')
        print('Started IP5V Switch application...')
-       while True:
-        sleep(1)
+       # Wait for the exit event
+       self.telnet_evt.wait()
+       self.close()
+       print("Telnet session terminated")
     
-
+    #-------------------------------------------------
+    # Terminate the session  
+    def terminate(self):
+       self.telnet_evt.set() 
+    
 #==============================================================================================
 # Main code
 #==============================================================================================
 # Entry point
 if __name__ == '__main__':
     
+    global telnet_evt
+    
     client = TelnetIP5v()
     client.start()
     sleep(20)
+    client.terminate()
     

@@ -25,6 +25,7 @@
 
 import telnetlib
 import threading
+from time import sleep
 
 #=====================================================
 # The base class for the RPi telnet sessions
@@ -37,29 +38,36 @@ class TelnetBase(threading.Thread):
         # Init base
         threading.Thread.__init__(self)
         
+        # Ensure the event is clear
+        self.telnet_evt = threading.Event()
+        self.telnet_evt.clear()
+        
         # Start a telnet session
-        self.__tn = telnetlib.Telnet(HOST)
+        self.__tn = telnetlib.Telnet(host)
         # Logon with given credentials
         self.__tn.read_until(b"login: ")
-        self.__tn.write(user.encode('ascii') + b"\n")
+        self.__tn.write((user +'\n').encode('ascii'))
         if password:
             self.__tn.read_until(b"Password: ")
-            self.__tn.write(password.encode('ascii') + b"\n")
+            self.__tn.write((password +'\n').encode('ascii'))
         # Wait for the prompt
         self.__tn.read_until(b"$")
+        print("Logon to %s successful" % (host))
     
     #-------------------------------------------------
     # Close session
     def close(self):
         
-        self.__tn.read_all().decode('ascii')
+        self.__tn.read_very_eager().decode('ascii')
         self.__tn.write(b"exit\n")
         
     #-------------------------------------------------
     # Execute given cmd and read until resp
     def execute(self, cmd, resp):
         
-        self.__tn.write(bytes(cmd) + b"\n")
-        self.__tn.read_until(bytes(resp))
+        self.__tn.write((cmd + '\n').encode('ascii'))
+        sleep(0.2)
+        print(self.__tn.read_very_eager().decode('ascii'))
+        #self.__tn.read_until(resp.encode('ascii'))
 
     
