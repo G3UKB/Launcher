@@ -2,9 +2,9 @@
 #
 # ip9258.py
 #
-# Python ip9258 IP power switch control for the SdrScript SDR application
+# Python ip9258 IP power switch control for the Launcher application
 # 
-# Copyright (C) 2014 by G3UKB Bob Cowdery
+# Copyright (C) 2019 by G3UKB Bob Cowdery
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or

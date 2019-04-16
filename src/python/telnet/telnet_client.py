@@ -23,9 +23,11 @@
 #     bob@bobcowdery.plus.com
 #
 
+import os,sys
+sys.path.append('..')
 import telnetlib
 from time import sleep
-import telnet_config
+from config import config
 import telnet_base
 
 #=====================================================
@@ -38,7 +40,7 @@ class TelnetClient(telnet_base.TelnetBase):
     def __init__(self, target):
       
       self.__target = target
-      self.__config = telnet_config.telnet_config[target]
+      self.__config = config.global_config[target]
       host = self.__config["HOST"]
       user = self.__config["USER"]
       password = self.__config["PASSWORD"]
