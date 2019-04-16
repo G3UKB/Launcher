@@ -23,11 +23,8 @@
 #     bob@bobcowdery.plus.com
 #
 
-# System imports
-import urllib
-from urllib import request
-import traceback
-from time import sleep
+# All imports
+import imports
 
 # Assigned id's for outlet 1-4 on a 4 port unit
 # Note an anomaly, status returns 61-64 but control requires 60-63

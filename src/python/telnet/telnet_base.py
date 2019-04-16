@@ -23,9 +23,8 @@
 #     bob@bobcowdery.plus.com
 #
 
-import telnetlib
-import threading
-from time import sleep
+# All imports
+import imports
 
 #=====================================================
 # The base class for the RPi telnet sessions

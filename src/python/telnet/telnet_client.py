@@ -23,12 +23,8 @@
 #     bob@bobcowdery.plus.com
 #
 
-import os,sys
-sys.path.append('..')
-import telnetlib
-from time import sleep
-from config import config
-import telnet_base
+# All imports
+import imports
 
 #=====================================================
 # A threaded telnet session for the IP5V RPi

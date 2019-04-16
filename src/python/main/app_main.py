@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
-# ip5v.py
+# app_main.py
 #
-# Python ip5v IP power switch control for the Launcher application
+# Main module for applications hosted on RPi's
 # 
 # Copyright (C) 2019 by G3UKB Bob Cowdery
 # This program is free software; you can redistribute it and/or modify
@@ -25,12 +25,3 @@
 
 # All imports
 import imports
-
-#-------------------------------------------------
-# This uses the ip5v_web_min.py Cherrypy server.
-# Its only function is to set/reset relays.
-# For the full interface use ip5v_web.py and a browser client.
-def set_ip5v_relay(ip, port, relay, state):
-    urllib.request.urlopen('http://%s:%d/set_relay?relay=%d;state=%s' % (ip, port, relay, state))
-    print("Set ip5v relay %d to state %s" % (relay, state))
-    
