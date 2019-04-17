@@ -21,51 +21,67 @@
 #  The author can be reached by email at:   
 #     bob@bobcowdery.plus.com
 
-global_config = {
+device_config = {
     "IPMainSwitch" : {
         "HOST" : '192.168.1.100',
         "USER" : 'admin',
-        "PASSWORD" : '12345678',
-    },
-        
+        "PASSWORD" : '12345678'
+    },   
     "IP5VSwitch" : {
         "HOST" : '192.168.1.109',
         "USER" : 'pi',
         "PASSWORD" : 'raspberry',
         "CMD_SEQ" : (
             ('cd /home/pi/Projects/IP5vSwitch/src/python', '$'),
-            ('python3 ip5v_web.py', '$'),   
+            ('python3 ip5v_web.py', '$')  
         )
     },
     "AntennaSwitch" : {
         "HOST" : '192.168.1.178',
-        "PORT" : 8888,
+        "PORT" : 8888
+    },
+    "FCD" : {
+        "HOST" : '192.168.1.110',
+        "USER" : 'pi',
+        "PASSWORD" : 'raspberry'
     },
 }
 
-sequences = {
+run_seq = {
     "AntennaSwitch" : [
-        
+        # Turn on the Antenna Switch RPi on port 1
+        ["RELAY", "IPMainSwitch", 1],
+        # Wait for boot to complete
+        ["SLEEP", 1],
+        ["WINDOWS_CMD", "CD", "E:/Projects/AntennaSwitch/trunk/python"],
+        ["WINDOWS_CMD", "RUN_NO_SHELL", "python antswui.py"]
     ],
     "HPSDR" : [
-        ["IPMainSwitch", 2],
-        ["SDRLibEConnector"]
+        # Turn on the HPSDR on port 2
+        ["RELAY", "IPMainSwitch", 2],
+        # Start the client SDR application
+        ["WINDOWS_CMD", "CD", "E:/Projects/SDRLibE/trunk/connector/Release"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConnector.exe"],
+        ["WINDOWS_CMD", "CWD"]
     ],
     "FCDProPlus" : [
         # Turn on the IP5V RPi on port 3
-        ["IPMainSwitch", 3],
+        ["RELAY", "IPMainSwitch", 3],
         # Wait for boot to complete
         ["SLEEP", 5],
-        # Send command sequences to start the minimal server
-        ["CMD", 'cd /home/pi/Projects/IP5vSwitch/src/python', '$']
-        ["CMD", 'python3 ip5v_web_min.py', '$']
-        # Turn on the RPi device on port 1
-        ["IP5VSwitch", 1],
+        # Send command sequences to start the minimal HTML server on the RPi
+        ["TELNET", "IP5VSwitch", "cd /home/pi/Projects/IP5vSwitch/src/python", "$"],
+        ["TELNET", "IP5VSwitch", "python3 ip5v_web_min.py", "$"],
+        # Turn on the RPi hosting the FCD on port 1
+        ["RELAY", "IP5VSwitch", 1],
         # Wait for boot to complete
         ["SLEEP", 5],
         # Start the FCD server process
-        []
+        ["TELNET", "FCD", "cd /home/pi/FCD", "$"],
+        ["TELNET", "FCD", "./SDRAlsaSrv.exe", "$"],
         # Start the client SDR application
-        ["SDRLibEConnector"]
+        ["WINDOWS_CMD", "CD", "E:/Projects/SDRLibE/trunk/connector/Release"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConnector.exe"],
+        ["WINDOWS_CMD", "CWD"]
     ]
 }

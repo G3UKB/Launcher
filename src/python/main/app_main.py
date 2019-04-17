@@ -35,10 +35,7 @@ class AppMain:
     #-------------------------------------------------
     # Start application
     def app_main(self):
-        # Create instances
-        # Do this for all telnet targets
-        client = TelnetClient("IP5VSwitch")
-        instance_cache.addToCache("IP5VSwitch", client)
+        
         # Sequencer runs a set of commands to instantiate a system
         sequencer = Sequencer()
         instance_cache.addToCache("Sequencer", sequencer)
