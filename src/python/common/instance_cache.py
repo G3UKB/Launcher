@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #
-# sequencer.py
+# instance_cache.py
 #
-# Run invocation sequence for applications hosted on RPi's
+# Cache class instances to save passing these around
 # 
 # Copyright (C) 2019 by G3UKB Bob Cowdery
 # This program is free software; you can redistribute it and/or modify
@@ -23,18 +23,33 @@
 #     bob@bobcowdery.plus.com
 #
 
-# All imports
-import imports
+# Cache of {name : inst, name : inst}
+instCache = {}
 
-class Sequencer:
+#-------------------------------------------------
+# Add an instance to the cache
+def addToCache(name, instance):
+    """
+    Add a class instance
     
-    #-------------------------------------------------
-    # Constructor 
-    def __init__(self):
-        pass
+    name        --  name of the instance
+    instance    --  the created and initialise instance
     
-    #-------------------------------------------------
-    # Run the given sequence  
-    def run_seq(self, name):
-        
-        
+    """
+    
+    instCache[name] = instance
+
+#-------------------------------------------------
+# Get an instance from the cache    
+def getInstance(name):
+    """
+    Get the one and only class instance
+    
+    name    --  name of the instance
+    
+    """
+    
+    if name in instCache:
+        return instCache[name]
+    else:
+        return None

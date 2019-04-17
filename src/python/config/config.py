@@ -22,8 +22,13 @@
 #     bob@bobcowdery.plus.com
 
 global_config = {
+    "IPMainSwitch" : {
+        "HOST" : '192.168.1.100',
+        "USER" : 'admin',
+        "PASSWORD" : '12345678',
+    },
+        
     "IP5VSwitch" : {
-        "SWITCH_PORT" : 1,
         "HOST" : '192.168.1.109',
         "USER" : 'pi',
         "PASSWORD" : 'raspberry',
@@ -31,6 +36,36 @@ global_config = {
             ('cd /home/pi/Projects/IP5vSwitch/src/python', '$'),
             ('python3 ip5v_web.py', '$'),   
         )
-    }
+    },
+    "AntennaSwitch" : {
+        "HOST" : '192.168.1.178',
+        "PORT" : 8888,
+    },
 }
 
+sequences = {
+    "AntennaSwitch" : [
+        
+    ],
+    "HPSDR" : [
+        ["IPMainSwitch", 2],
+        ["SDRLibEConnector"]
+    ],
+    "FCDProPlus" : [
+        # Turn on the IP5V RPi on port 3
+        ["IPMainSwitch", 3],
+        # Wait for boot to complete
+        ["SLEEP", 5],
+        # Send command sequences to start the minimal server
+        ["CMD", 'cd /home/pi/Projects/IP5vSwitch/src/python', '$']
+        ["CMD", 'python3 ip5v_web_min.py', '$']
+        # Turn on the RPi device on port 1
+        ["IP5VSwitch", 1],
+        # Wait for boot to complete
+        ["SLEEP", 5],
+        # Start the FCD server process
+        []
+        # Start the client SDR application
+        ["SDRLibEConnector"]
+    ]
+}

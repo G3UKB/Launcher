@@ -50,7 +50,8 @@ from PyQt5.QtWidgets import QFrame, QLabel, QButtonGroup, QPushButton, QRadioBut
 #=====================================================
 # Application imports
 # Common
-from common import config
+from config import config
+from common import instance_cache
 # IP Switches
 from ip9258 import ip9258
 from ip5v import ip5v

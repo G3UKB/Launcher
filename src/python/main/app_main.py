@@ -25,3 +25,41 @@
 
 # All imports
 import imports
+
+
+#=====================================================
+# Main application class
+#=====================================================
+class AppMain:
+    
+    #-------------------------------------------------
+    # Start application
+    def app_main(self):
+        # Create instances
+        # Do this for all telnet targets
+        client = TelnetClient("IP5VSwitch")
+        instance_cache.addToCache("IP5VSwitch", client)
+        # Sequencer runs a set of commands to instantiate a system
+        sequencer = Sequencer()
+        instance_cache.addToCache("Sequencer", sequencer)
+        
+        # Create GUI
+        
+        # Enter event loop
+        
+        # Closedown
+    
+#-------------------------------------------------
+# Start processing and wait for user to exit the application
+def main():
+    try:  
+        app = AppMain()
+        sys.exit(app.main())
+        
+    except Exception as e:
+        print ('Exception from main code','Exception [%s][%s]' % (str(e), traceback.format_exc()))
+
+#-------------------------------------------------
+# Enter here when run as script        
+if __name__ == '__main__':
+    main()
