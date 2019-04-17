@@ -29,6 +29,7 @@ device_config = {
     },   
     "IP5VSwitch" : {
         "HOST" : '192.168.1.109',
+        "PORT" : 8080,
         "USER" : 'pi',
         "PASSWORD" : 'raspberry',
         "CMD_SEQ" : (

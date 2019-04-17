@@ -36,6 +36,9 @@ class AppMain:
     # Start application
     def app_main(self):
         
+        # Connect to the IP Main Switch
+        ip9258.connect(device_config["IPMainSwitch"][IP], device_config["IPMainSwitch"][USER], device_config["IPMainSwitch"][PASSWORD])
+        
         # Sequencer runs a set of commands to instantiate a system
         sequencer = Sequencer()
         instance_cache.addToCache("Sequencer", sequencer)

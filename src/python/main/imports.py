@@ -34,6 +34,7 @@ import urllib
 from urllib import request
 import telnetlib
 import threading
+import queue
 from time import sleep
 import pprint
 pp = pprint.PrettyPrinter(indent=4)

@@ -31,10 +31,47 @@ class Sequencer:
     #-------------------------------------------------
     # Constructor 
     def __init__(self):
-        pass
+        dispatch_table = {
+            "WINDOWS_CMD" : self.__win_cmd,
+            "TELNET" : self.__telnet,
+            "RELAY" : self.__relay,
+            "SLEEP" : self.__sleep
+        }
+        self.__cwd = os.getcwd()
     
     #-------------------------------------------------
     # Run the given sequence  
     def run_seq(self, name):
         
-        
+        seq = run_seq[name]
+        for inst in seq:
+            dispatch_table[inst][0](inst)
+            
+    #-------------------------------------------------
+    # Windows command
+    def __win_cmd(self, inst):
+        pass
+    
+    #-------------------------------------------------
+    # Telnet command
+    def __telnet(self, inst):
+        telnet_inst = instance_cache.get_instance(inst[0])
+        if telnet_inst == None:
+            # Create the instance
+            telnet_inst = TelnetClient(inst[0])
+            instance_cache.add_instance(inst[0], telnet_inst)
+        for cmd in inst:
+            telnet_inst.add_command(cmd)
+    
+    #-------------------------------------------------
+    # Relay command
+    def __relay(self, inst):
+        if inst[1]== "IPMainSwitch":
+            powerOn(device_config["IPMainSwitch"][IP], inst[2])
+        elif inst[1]== "IP5VSwitch":
+            set_ip5v_relay(device_config["IP5VSwitch"][IP], device_config["IP5VSwitch"][PORT], inst[2], "on")
+            
+    #-------------------------------------------------
+    # Sleep command
+    def __sleep(self, inst):
+        sleep(inst[1])

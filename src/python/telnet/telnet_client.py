@@ -35,22 +35,34 @@ class TelnetClient(telnet_base.TelnetBase):
     # Constructor
     def __init__(self, target):
       
+      # Create a q
+      self.__q = queue.Queue()
       self.__target = target
-      self.__config = config.global_config[target]
+      self.__config = device_config[target]
       host = self.__config["HOST"]
       user = self.__config["USER"]
       password = self.__config["PASSWORD"]
       super(TelnetClient, self).__init__(host, user, password)
-      
+    
+    #-------------------------------------------------
+    # Add a command
+    def add_cmd(self, cmd):
+        self.__q.put(cmd)
+        
     #-------------------------------------------------
     # Thread entry point
     def run(self):
-        
-        for cmd in self.__config["CMD_SEQ"]:
-            self.execute(cmd[0], cmd[1])
         print('Started %s application...' % (self.__target))
-        # Wait for the exit event
-        self.telnet_evt.wait()
+        # Wait for commands
+        while True:
+            try:
+                cmd = self.__q.get(timeout=2)
+                if cmd == "TERM": break
+                self.execute(cmd[0], cmd[1])
+            except Empty:
+                # Timeout
+                continue
+            
         self.close()
         print("Telnet session for application %s terminated" % (self.__target))
     
@@ -66,7 +78,4 @@ class TelnetClient(telnet_base.TelnetBase):
 if __name__ == '__main__':
     
     client = TelnetClient("IP5VSwitch")
-    client.start()
-    sleep(20)
-    client.terminate()
     
