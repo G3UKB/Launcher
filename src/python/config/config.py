@@ -54,16 +54,16 @@ run_seq = {
         ["RELAY", "IPMainSwitch", 1],
         # Wait for boot to complete
         ["SLEEP", 1],
-        ["WINDOWS_CMD", "CD", "E:/Projects/AntennaSwitch/trunk/python"],
-        ["WINDOWS_CMD", "RUN_NO_SHELL", "python antswui.py"]
+        ["WINDOWS_CMD", "CD", "", "E:/Projects/AntennaSwitch/trunk/python"],
+        ["WINDOWS_CMD", "RUN_NO_SHELL", "AntSwitch", "python antswui.py"]
     ],
     "HPSDR" : [
         # Turn on the HPSDR on port 2
         ["RELAY", "IPMainSwitch", 2],
         # Start the client SDR application
-        ["WINDOWS_CMD", "CD", "E:/Projects/SDRLibE/trunk/connector/Release"],
-        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConnector.exe"],
-        ["WINDOWS_CMD", "CWD"]
+        ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibE/trunk/connector/Release"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "Connector", "SDRLibEConnector.exe"],
+        ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "FCDProPlus" : [
         # Turn on the IP5V RPi on port 3
@@ -81,8 +81,8 @@ run_seq = {
         ["TELNET", "FCD", "cd /home/pi/FCD", "$"],
         ["TELNET", "FCD", "./SDRAlsaSrv.exe", "$"],
         # Start the client SDR application
-        ["WINDOWS_CMD", "CD", "E:/Projects/SDRLibE/trunk/connector/Release"],
-        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConnector.exe"],
-        ["WINDOWS_CMD", "CWD"]
+        ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibE/trunk/connector/Release"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "Connector", "SDRLibEConnector.exe"],
+        ["WINDOWS_CMD", "CWD", "", ""]
     ]
 }

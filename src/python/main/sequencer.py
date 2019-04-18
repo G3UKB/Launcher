@@ -50,7 +50,22 @@ class Sequencer:
     #-------------------------------------------------
     # Windows command
     def __win_cmd(self, inst):
-        pass
+        
+        cmd = inst[1]
+        name = inst[2]
+        path = inst[3]
+        if cmd == 'CD':
+            os.chdir(path)
+        elif cmd == 'CWD':
+            os.chdir(self.__cwd)
+        elif cmd == 'RUN_NO_SHELL':
+            # Run command in the same shell
+            prog = subprocess.Popen(path)
+            instance_cache.add_instance(name, prog)
+        elif cmd == 'RUN_WITH_SHELL':
+            # Run command in a new shell
+            prog = subprocess.Popen(path, creationflags=subprocess.CREATE_NEW_CONSOLE, shell=False)
+            instance_cache.add_instance(name, prog)
     
     #-------------------------------------------------
     # Telnet command
