@@ -26,7 +26,6 @@
 #=====================================================
 # System imports
 import os,sys
-sys.path.append('..')
 import traceback
 import pickle
 from subprocess import Popen, CREATE_NEW_CONSOLE
@@ -51,13 +50,13 @@ from PyQt5.QtWidgets import QFrame, QLabel, QButtonGroup, QPushButton, QRadioBut
 #=====================================================
 # Application imports
 # Common
-from config import config
-from common import instance_cache
+from config.config import *
+from common.instance_cache import *
 # IP Switches
-from ip9258 import ip9258
-from ip5v import ip5v
+from ip9258.ip9258 import *
+from ip5v.ip5v import *
 #Telnet
-from telnet import telnet_base
-from telnet import telnet_client
+from telnet.telnet_base import *
+from telnet.telnet_client import *
 #Main
-from main import sequencer
+from main.sequencer import *

@@ -24,7 +24,7 @@
 #
 
 # All imports
-import imports
+from main.imports import *
 
 #-------------------------------------------------
 # This uses the ip5v_web_min.py Cherrypy server.

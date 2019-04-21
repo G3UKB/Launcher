@@ -24,7 +24,7 @@
 #
 
 # All imports
-import imports
+from main.imports import *
 
 # Assigned id's for outlet 1-4 on a 4 port unit
 # Note an anomaly, status returns 61-64 but control requires 60-63

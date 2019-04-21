@@ -23,8 +23,9 @@
 #     bob@bobcowdery.plus.com
 #
 
+
 # All imports
-import imports
+from main.imports import *
 
 #=====================================================
 # The base class for the RPi telnet sessions

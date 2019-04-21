@@ -24,14 +24,14 @@
 #
 
 # All imports
-import imports
+from main.imports import *
 
 class Sequencer:
     
     #-------------------------------------------------
     # Constructor 
     def __init__(self):
-        dispatch_table = {
+        self.__dispatch_table = {
             "WINDOWS_CMD" : self.__win_cmd,
             "TELNET" : self.__telnet,
             "RELAY" : self.__relay,
@@ -42,11 +42,11 @@ class Sequencer:
     
     #-------------------------------------------------
     # Run the given sequence  
-    def run_seq(self, name):
+    def execute_seq(self, name):
         
         seq = run_seq[name]
         for inst in seq:
-            if not dispatch_table[inst][0](inst):
+            if not self.__dispatch_table[inst[0]](inst):
                 break
             
     #-------------------------------------------------
@@ -63,21 +63,21 @@ class Sequencer:
         elif cmd == 'RUN_NO_SHELL':
             # Run command in the same shell
             prog = subprocess.Popen(path)
-            instance_cache.add_instance(name, prog)
+            add_instance(name, prog)
         elif cmd == 'RUN_WITH_SHELL':
             # Run command in a new shell
             prog = subprocess.Popen(path, creationflags=subprocess.CREATE_NEW_CONSOLE, shell=False)
-            instance_cache.add_instance(name, prog)
+            add_instance(name, prog)
         return True
     
     #-------------------------------------------------
     # Telnet command
     def __telnet(self, inst):
-        telnet_inst = instance_cache.get_instance(inst[0])
+        telnet_inst = getInstance(inst[0])
         if telnet_inst == None:
             # Create the instance
-            telnet_inst = TelnetClient(inst[0])
-            instance_cache.add_instance(inst[0], telnet_inst)
+            telnet_inst = TelnetClient(inst[1])
+            addToCache(inst[0], telnet_inst)
         for cmd in inst:
             telnet_inst.add_command(cmd)
         return True

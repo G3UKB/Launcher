@@ -24,17 +24,16 @@
 #
 
 # All imports
-import imports
+from main.imports import *
 
 #=====================================================
 # A threaded telnet session for the IP5V RPi
 #=====================================================
-class TelnetClient(telnet_base.TelnetBase):
+class TelnetClient(TelnetBase):
     
     #-------------------------------------------------
     # Constructor
     def __init__(self, target):
-      
       # Create a q
       self.__q = queue.Queue()
       self.__target = target

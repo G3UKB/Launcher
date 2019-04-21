@@ -24,8 +24,9 @@
 #
 
 # All imports
-import imports
-
+import sys
+sys.path.append('..')
+from main.imports import *
 
 #=====================================================
 # Main application class
@@ -37,13 +38,13 @@ class AppMain:
     def app_main(self):
         
         # Connect to the IP Main Switch
-        ip9258.connect(device_config["IPMainSwitch"][IP], device_config["IPMainSwitch"][USER], device_config["IPMainSwitch"][PASSWORD])
+        connect(device_config["IP9258-1"]["HOST"], device_config["IP9258-1"]["USER"], device_config["IP9258-1"]["PASSWORD"])
         
         # Sequencer runs a set of commands to instantiate a system
         sequencer = Sequencer()
-        instance_cache.addToCache("Sequencer", sequencer)
+        addToCache("Sequencer", sequencer)
         
-        sequencer.run_seq("IP5VSwitch")
+        sequencer.execute_seq("IP5VSwitch")
         
         input("Any ket to terminate")
         
@@ -58,7 +59,7 @@ class AppMain:
 def main():
     try:  
         app = AppMain()
-        sys.exit(app.main())
+        sys.exit(app.app_main())
         
     except Exception as e:
         print ('Exception from main code','Exception [%s][%s]' % (str(e), traceback.format_exc()))
