@@ -46,7 +46,6 @@ class TelnetClient(TelnetBase):
     #-------------------------------------------------
     # Add a command
     def add_cmd(self, cmd):
-        print("Adding %s" % (cmd))
         self.__q.put(cmd)
         
     #-------------------------------------------------
@@ -57,10 +56,9 @@ class TelnetClient(TelnetBase):
         while True:
             try:
                 cmd = self.__q.get(timeout=2)
-                print("Got %d" % (cmd))
                 if cmd == "TERM": break
                 self.execute(cmd[0], cmd[1])
-            except Exception:
+            except :
                 # Timeout
                 continue
             
@@ -70,7 +68,7 @@ class TelnetClient(TelnetBase):
     #-------------------------------------------------
     # Terminate the session  
     def terminate(self):
-       self.telnet_evt.set() 
+       self.__q.put("TERM")
     
 #==============================================================================================
 # Test code

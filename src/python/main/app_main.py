@@ -47,6 +47,9 @@ class AppMain:
         sequencer.execute_seq("IP5VSwitch")
         
         input("Any key to terminate")
+        telnet_inst = getInstance("IP5VSwitch")
+        if telnet_inst != None:
+            telnet_inst.terminate()
         
         # Create GUI
         
