@@ -35,6 +35,7 @@ class Sequencer:
             "WINDOWS_CMD" : self.__win_cmd,
             "TELNET" : self.__telnet,
             "RELAY" : self.__relay,
+            "TEST" : self.__test,
             "SLEEP" : self.__sleep
         }
         self.__cwd = os.getcwd()
@@ -45,7 +46,8 @@ class Sequencer:
         
         seq = run_seq[name]
         for inst in seq:
-            dispatch_table[inst][0](inst)
+            if not dispatch_table[inst][0](inst):
+                break
             
     #-------------------------------------------------
     # Windows command
@@ -66,6 +68,7 @@ class Sequencer:
             # Run command in a new shell
             prog = subprocess.Popen(path, creationflags=subprocess.CREATE_NEW_CONSOLE, shell=False)
             instance_cache.add_instance(name, prog)
+        return True
     
     #-------------------------------------------------
     # Telnet command
@@ -77,6 +80,7 @@ class Sequencer:
             instance_cache.add_instance(inst[0], telnet_inst)
         for cmd in inst:
             telnet_inst.add_command(cmd)
+        return True
     
     #-------------------------------------------------
     # Relay command
@@ -85,8 +89,20 @@ class Sequencer:
             powerOn(device_config["IPMainSwitch"][IP], inst[2])
         elif inst[1]== "IP5VSwitch":
             set_ip5v_relay(device_config["IP5VSwitch"][IP], device_config["IP5VSwitch"][PORT], inst[2], "on")
-            
+        return True
+    
+    #-------------------------------------------------
+    # Test command
+    def __test(self, inst):
+        what = inst[1]
+        if device_config[what]["STATE"] == False:
+            print ("Sorry, dependency %s is not running!" %(what))
+            return False
+        return True
+
     #-------------------------------------------------
     # Sleep command
     def __sleep(self, inst):
         sleep(inst[1])
+        return True
+        

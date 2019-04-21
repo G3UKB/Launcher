@@ -43,6 +43,10 @@ class AppMain:
         sequencer = Sequencer()
         instance_cache.addToCache("Sequencer", sequencer)
         
+        sequencer.run_seq("IP5VSwitch")
+        
+        input("Any ket to terminate")
+        
         # Create GUI
         
         # Enter event loop

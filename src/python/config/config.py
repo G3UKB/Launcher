@@ -22,20 +22,27 @@
 #     bob@bobcowdery.plus.com
 
 device_config = {
-    "IPMainSwitch" : {
+    "IP9258-1" : {
         "HOST" : '192.168.1.100',
         "USER" : 'admin',
         "PASSWORD" : '12345678'
-    },   
+    },
+    "IP9258-2" : {
+        "HOST" : '192.168.1.101',
+        "USER" : 'admin',
+        "PASSWORD" : '12345678'
+    }, 
     "IP5VSwitch" : {
         "HOST" : '192.168.1.109',
         "PORT" : 8080,
         "USER" : 'pi',
         "PASSWORD" : 'raspberry',
-        "CMD_SEQ" : (
-            ('cd /home/pi/Projects/IP5vSwitch/src/python', '$'),
-            ('python3 ip5v_web.py', '$')  
-        )
+        "STATE" : False
+    },
+    "Camera" : {
+        "HOST" : '192.168.1.108',
+        "USER" : 'pi',
+        "PASSWORD" : 'raspberry'
     },
     "AntennaSwitch" : {
         "HOST" : '192.168.1.178',
@@ -49,30 +56,50 @@ device_config = {
 }
 
 run_seq = {
+    "IP5VSwitch" : [
+        # Turn on the IP5V RPi on ip-1 port 3
+        ["RELAY", "IP9258-1", 3],
+        # Send command sequences to start the minimal HTML server on the RPi
+        ["TELNET", "IP5VSwitch", "cd /home/pi/Projects/IP5vSwitch/src/python", "$"],
+        ["TELNET", "IP5VSwitch", "python3 ip5v_web_min.py", "$"]
+    ],
+    "Camera" : [
+        # Ensure IP5VSwitch is on
+        ["TEST", "IP5VSwitch"],
+        # Turn on the light on IP-2 port 1
+        ["RELAY", "IP9258-2", 1],
+        # Turn on the RPi hosting the Camera on port 2
+        ["RELAY", "IP5VSwitch", 2],
+        # Wait for boot to complete
+        ["SLEEP", 5],
+        # Start the camera stream
+        ["TELNET", "Camera", "cd /home/pi/VLC", "$"],
+        ["TELNET", "Camera", "./vlc", "$"],
+        # Start the client VLC (with the correct stream?)
+        ["WINDOWS_CMD", "CD", "", "C:\Program Files (x86)\VideoLAN\VLC"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "Camera", "vlc.exe"],
+        ["WINDOWS_CMD", "CWD", "", ""]
+    ],
     "AntennaSwitch" : [
         # Turn on the Antenna Switch RPi on port 1
-        ["RELAY", "IPMainSwitch", 1],
+        ["RELAY", "IP9258-1", 1],
         # Wait for boot to complete
         ["SLEEP", 1],
         ["WINDOWS_CMD", "CD", "", "E:/Projects/AntennaSwitch/trunk/python"],
-        ["WINDOWS_CMD", "RUN_NO_SHELL", "AntSwitch", "python antswui.py"]
+        ["WINDOWS_CMD", "RUN_NO_SHELL", "AntSwitch", "python antswui.py"],
+        ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "HPSDR" : [
         # Turn on the HPSDR on port 2
-        ["RELAY", "IPMainSwitch", 2],
+        ["RELAY", "IP9258-1", 2],
         # Start the client SDR application
         ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibE/trunk/connector/Release"],
         ["WINDOWS_CMD", "RUN_WITH_SHELL", "Connector", "SDRLibEConnector.exe"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "FCDProPlus" : [
-        # Turn on the IP5V RPi on port 3
-        ["RELAY", "IPMainSwitch", 3],
-        # Wait for boot to complete
-        ["SLEEP", 5],
-        # Send command sequences to start the minimal HTML server on the RPi
-        ["TELNET", "IP5VSwitch", "cd /home/pi/Projects/IP5vSwitch/src/python", "$"],
-        ["TELNET", "IP5VSwitch", "python3 ip5v_web_min.py", "$"],
+        # Ensure IP5VSwitch is on
+        ["TEST", "IP5VSwitch"],
         # Turn on the RPi hosting the FCD on port 1
         ["RELAY", "IP5VSwitch", 1],
         # Wait for boot to complete
