@@ -64,6 +64,7 @@ class TelnetBase(threading.Thread):
     # Execute given cmd and read until resp
     def execute(self, cmd, resp):
         
+        print(cmd)
         self.__tn.write((cmd + '\n').encode('ascii'))
         sleep(0.2)
         print(self.__tn.read_very_eager().decode('ascii'))

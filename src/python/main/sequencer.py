@@ -46,6 +46,7 @@ class Sequencer:
         
         seq = run_seq[name]
         for inst in seq:
+            print ("Running: %s" %(inst))
             if not self.__dispatch_table[inst[0]](inst):
                 break
             
@@ -78,15 +79,17 @@ class Sequencer:
             # Create the instance
             telnet_inst = TelnetClient(inst[1])
             addToCache(inst[0], telnet_inst)
-        for cmd in inst:
-            telnet_inst.add_command(cmd)
+            telnet_inst.start()
+        telnet_inst.add_cmd([inst[2], inst[3]])
         return True
     
     #-------------------------------------------------
     # Relay command
     def __relay(self, inst):
-        if inst[1]== "IPMainSwitch":
-            powerOn(device_config["IPMainSwitch"][IP], inst[2])
+        if inst[1]== "IP9258-1":
+            powerOn(device_config["IP9258-1"]["HOST"], inst[2])
+        elif inst[1]== "IP9258-2":
+            powerOn(device_config["IP9258-2"]["HOST"], inst[2])
         elif inst[1]== "IP5VSwitch":
             set_ip5v_relay(device_config["IP5VSwitch"][IP], device_config["IP5VSwitch"][PORT], inst[2], "on")
         return True

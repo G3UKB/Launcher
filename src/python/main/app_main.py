@@ -46,7 +46,7 @@ class AppMain:
         
         sequencer.execute_seq("IP5VSwitch")
         
-        input("Any ket to terminate")
+        input("Any key to terminate")
         
         # Create GUI
         

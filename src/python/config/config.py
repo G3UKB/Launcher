@@ -59,6 +59,8 @@ run_seq = {
     "IP5VSwitch" : [
         # Turn on the IP5V RPi on ip-1 port 3
         ["RELAY", "IP9258-1", 3],
+        # Wait for boot to complete
+        ["SLEEP", 10],
         # Send command sequences to start the minimal HTML server on the RPi
         ["TELNET", "IP5VSwitch", "cd /home/pi/Projects/IP5vSwitch/src/python", "$"],
         ["TELNET", "IP5VSwitch", "python3 ip5v_web_min.py", "$"]
