@@ -76,7 +76,8 @@ run_seq = {
         ["SLEEP", 10],
         # Start the camera stream
         ["TELNET", "Camera", "cd /home/pi/VLC", "$"],
-        ["TELNET", "Camera", "./vlc.sh", "$"],
+        ["SLEEP", 1],
+        ["TELNET", "Camera", "./vlc.sh 2>/dev/null", "$"],
         # Start the client VLC (with the correct stream?)
         ["WINDOWS_CMD", "CD", "", "C:\Program Files (x86)\VideoLAN\VLC"],
         ["WINDOWS_CMD", "RUN_WITH_SHELL", "Camera", "vlc.exe"],

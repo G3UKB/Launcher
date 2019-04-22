@@ -46,10 +46,10 @@ class Sequencer:
         
         seq = run_seq[name]
         for inst in seq:
-            print ("Running: %s" %(inst))
+            print ("Sequence: %s" %(inst))
             if not self.__dispatch_table[inst[0]](inst):
                 break
-        print ("End of sequence %s" % (inst[0]))
+        print ("End of sequence")
             
     #-------------------------------------------------
     # Windows command
@@ -75,11 +75,11 @@ class Sequencer:
     #-------------------------------------------------
     # Telnet command
     def __telnet(self, inst):
-        telnet_inst = getInstance(inst[0])
+        telnet_inst = getInstance(inst[1])
         if telnet_inst == None:
             # Create the instance
             telnet_inst = TelnetClient(inst[1])
-            addToCache(inst[0], telnet_inst)
+            addToCache(inst[1], telnet_inst)
             telnet_inst.start()
         telnet_inst.add_cmd([inst[2], inst[3]])
         return True

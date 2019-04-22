@@ -31,6 +31,7 @@ from main.imports import *
 # Its only function is to set/reset relays.
 # For the full interface use ip5v_web.py and a browser client.
 def set_ip5v_relay(ip, port, relay, state):
+    # print('http://%s:%d/set_relay?relay=%d;state=%s' % (ip, port, relay, state))
     urllib.request.urlopen('http://%s:%d/set_relay?relay=%d;state=%s' % (ip, port, relay, state))
     print("Set ip5v relay %d to state %s" % (relay, state))
     
