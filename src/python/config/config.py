@@ -63,7 +63,7 @@ run_seq = {
         ["SLEEP", 10],
         # Send command sequences to start the minimal HTML server on the RPi
         ["TELNET", "IP5VSwitch", "cd /home/pi/Projects/IP5vSwitch/src/python", "$"],
-        ["TELNET", "IP5VSwitch", "python3 ip5v_web_min.py", "$"]
+        ["TELNET", "IP5VSwitch", "python3 ip5v_web_min.py 2>/dev/null", "$"]
     ],
     "Camera" : [
         # Ensure IP5VSwitch is on
@@ -110,9 +110,9 @@ run_seq = {
         # Start the FCD server process
         ["TELNET", "FCD", "cd /home/pi/FCD", "$"],
         ["TELNET", "FCD", "./SDRAlsaSrv.exe", "$"],
-        # Start the client SDR application
-        ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibE/trunk/connector/Release"],
-        ["WINDOWS_CMD", "RUN_WITH_SHELL", "Connector", "SDRLibEConnector.exe"],
+        # Start the SDR client application (which starts the SDR server application)
+        ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibEConsole/trunk/src/python/main"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConsole", "python app_main.py"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ]
 }
