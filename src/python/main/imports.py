@@ -42,7 +42,7 @@ pp = pprint.PrettyPrinter(indent=4)
 # Lib imports
 from PyQt5.QtCore import Qt, QCoreApplication, QTimer, QObject, QRect, QEvent, QMargins
 from PyQt5.QtGui import QPalette, QColor, QFont, QIcon, QPainter, QPixmap, QPen
-from PyQt5.QtWidgets import QApplication, qApp
+from PyQt5.QtWidgets import QApplication, qApp, QMainWindow
 from PyQt5.QtWidgets import QWidget, QToolTip, QStyle, QStatusBar, QMainWindow, QDialog, QAction, QMessageBox, QInputDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout
 from PyQt5.QtWidgets import QFrame, QLabel, QButtonGroup, QPushButton, QRadioButton, QComboBox, QCheckBox, QSpinBox, QTabWidget, QLineEdit
@@ -58,5 +58,7 @@ from ip5v.ip5v import *
 #Telnet
 from telnet.telnet_base import *
 from telnet.telnet_client import *
+#UI
+from gui.gui import *
 #Main
 from main.sequencer import *

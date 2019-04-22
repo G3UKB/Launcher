@@ -37,6 +37,9 @@ class AppMain:
     # Start application
     def app_main(self):
         
+        # The one and only QT application
+        self.__qtapp = QApplication([])
+        
         # Connect to the IP Main Switch
         connect(device_config["IP9258-1"]["HOST"], device_config["IP9258-1"]["USER"], device_config["IP9258-1"]["PASSWORD"])
         
@@ -44,19 +47,26 @@ class AppMain:
         sequencer = Sequencer()
         addToCache("Sequencer", sequencer)
         
-        sequencer.execute_seq("IP5VSwitch")
+        #sequencer.execute_seq("IP5VSwitch")
         
-        input("Any key to terminate")
+        #input("Any key to terminate")
+        #telnet_inst = getInstance("IP5VSwitch")
+        #if telnet_inst != None:
+        #    telnet_inst.terminate()
+        
+        # Create the main window
+        self.__w = AppWindow()
+        # Make visible
+        self.__w.show()
+        
+        # Enter event loop
+        r = self.__qtapp.exec_()
+        
+        # Closedown
         telnet_inst = getInstance("IP5VSwitch")
         if telnet_inst != None:
             telnet_inst.terminate()
         
-        # Create GUI
-        
-        # Enter event loop
-        
-        # Closedown
-    
 #-------------------------------------------------
 # Start processing and wait for user to exit the application
 def main():
