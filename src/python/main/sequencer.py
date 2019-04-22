@@ -49,6 +49,7 @@ class Sequencer:
             print ("Running: %s" %(inst))
             if not self.__dispatch_table[inst[0]](inst):
                 break
+        print ("End of sequence %s" % (inst[0]))
             
     #-------------------------------------------------
     # Windows command
@@ -67,8 +68,8 @@ class Sequencer:
             add_instance(name, prog)
         elif cmd == 'RUN_WITH_SHELL':
             # Run command in a new shell
-            prog = subprocess.Popen(path, creationflags=subprocess.CREATE_NEW_CONSOLE, shell=False)
-            add_instance(name, prog)
+            prog = Popen(path, creationflags=CREATE_NEW_CONSOLE, shell=False)
+            addToCache(name, prog)
         return True
     
     #-------------------------------------------------
@@ -91,7 +92,7 @@ class Sequencer:
         elif inst[1]== "IP9258-2":
             powerOn(device_config["IP9258-2"]["HOST"], inst[2])
         elif inst[1]== "IP5VSwitch":
-            set_ip5v_relay(device_config["IP5VSwitch"][IP], device_config["IP5VSwitch"][PORT], inst[2], "on")
+            set_ip5v_relay(device_config["IP5VSwitch"]["HOST"], device_config["IP5VSwitch"]["PORT"], inst[2], "on")
         return True
     
     #-------------------------------------------------

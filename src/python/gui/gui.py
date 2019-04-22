@@ -93,6 +93,7 @@ class AppWindow(QMainWindow):
     # Event procs
     def __ip5v_evnt(self):
         self.__seq.execute_seq("IP5VSwitch")
+        device_config["IP5VSwitch"]["STATE"] = True
         
     def __camera_evnt(self):
         self.__seq.execute_seq("Camera")

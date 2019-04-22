@@ -57,7 +57,7 @@ device_config = {
 
 run_seq = {
     "IP5VSwitch" : [
-        # Turn on the IP5V RPi on ip-1 port 3
+        # Turn on the IP5V RPi on IP-1 port 3
         ["RELAY", "IP9258-1", 3],
         # Wait for boot to complete
         ["SLEEP", 10],
@@ -68,15 +68,15 @@ run_seq = {
     "Camera" : [
         # Ensure IP5VSwitch is on
         ["TEST", "IP5VSwitch"],
-        # Turn on the light on IP-2 port 1
-        ["RELAY", "IP9258-2", 1],
+        # Turn on the light on IP-1 port 4
+        ["RELAY", "IP9258-1", 4],
         # Turn on the RPi hosting the Camera on port 2
-        ["RELAY", "IP5VSwitch", 2],
+        ["RELAY", "IP5VSwitch", 1],
         # Wait for boot to complete
-        ["SLEEP", 5],
+        ["SLEEP", 10],
         # Start the camera stream
         ["TELNET", "Camera", "cd /home/pi/VLC", "$"],
-        ["TELNET", "Camera", "./vlc", "$"],
+        ["TELNET", "Camera", "./vlc.sh", "$"],
         # Start the client VLC (with the correct stream?)
         ["WINDOWS_CMD", "CD", "", "C:\Program Files (x86)\VideoLAN\VLC"],
         ["WINDOWS_CMD", "RUN_WITH_SHELL", "Camera", "vlc.exe"],
@@ -103,7 +103,7 @@ run_seq = {
         # Ensure IP5VSwitch is on
         ["TEST", "IP5VSwitch"],
         # Turn on the RPi hosting the FCD on port 1
-        ["RELAY", "IP5VSwitch", 1],
+        ["RELAY", "IP5VSwitch", 0],
         # Wait for boot to complete
         ["SLEEP", 5],
         # Start the FCD server process

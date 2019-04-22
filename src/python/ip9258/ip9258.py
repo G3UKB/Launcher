@@ -24,11 +24,15 @@
 #
 
 # All imports
-from main.imports import *
+import urllib
+from urllib import request
+import traceback
+from time import sleep
+#from main.imports import *
 
 # Assigned id's for outlet 1-4 on a 4 port unit
 # Note an anomaly, status returns 61-64 but control requires 60-63
-ID = ('P60','P61','P62','P63')
+ID = ('P61','P62','P63','P64')
 REVERSE_ID = {'p61':1,'p62':2,'p63':3,'p64':4}
 
 def connect(ip, user, password):
@@ -61,7 +65,6 @@ def powerOn(ip, outlet):
         outlet      -- the outlet 1-4
     
     """
-    
     if outlet < 1 or outlet > 4:
         return False, 'Outlet must be 1-4'
     
@@ -70,7 +73,7 @@ def powerOn(ip, outlet):
         state = getState(ip, outlet)
         if not state:
             # Turn the outlet on 
-            fd = urllib.request.urlopen('http://%s/Set.cmd?CMD=SetPower+%s=1' % (ip, ID[outlet]))
+            fd = urllib.request.urlopen('http://%s/Set.cmd?CMD=SetPower+%s=1' % (ip, ID[outlet-1]))
             state = getState(ip, outlet)
             if not state:
                 return False, 'Outlet %s failed to turn on!' % (outlet)
@@ -102,7 +105,7 @@ def powerOff(ip, outlet):
         state = getState(ip, outlet)
         if state:
             # Turn the outlet off 
-            fd = urllib.request.urlopen('http://%s/Set.cmd?CMD=SetPower+%s=0' % (ip, ID[outlet]))
+            fd = urllib.request.urlopen('http://%s/Set.cmd?CMD=SetPower+%s=0' % (ip, ID[outlet-1]))
             state = getState(ip, outlet)
             if state:
                 return False, 'Outlet %s failed to turn off!' % (outlet)
@@ -146,6 +149,15 @@ if __name__ == '__main__':
     
     connect('192.168.1.100', 'admin', '12345678')
     powerOn('192.168.1.100', 1)
+    powerOn('192.168.1.100', 2)
+    powerOn('192.168.1.100', 3)
+    powerOn('192.168.1.100', 4)
     print(getState('192.168.1.100', 1))
+    print(getState('192.168.1.100', 2))
+    print(getState('192.168.1.100', 3))
+    print(getState('192.168.1.100', 4))
     sleep(5)
     powerOff('192.168.1.100', 1)
+    powerOff('192.168.1.100', 2)
+    powerOff('192.168.1.100', 3)
+    powerOff('192.168.1.100', 4)
