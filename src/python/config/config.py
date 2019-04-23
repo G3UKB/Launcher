@@ -106,7 +106,7 @@ run_seq = {
         # Turn on the RPi hosting the FCD on port 1
         ["RELAY", "IP5VSwitch", 0],
         # Wait for boot to complete
-        ["SLEEP", 5],
+        ["SLEEP", 10],
         # Start the FCD server process
         ["TELNET", "FCD", "cd /home/pi/FCD", "$"],
         ["TELNET", "FCD", "./SDRAlsaSrv.exe", "$"],

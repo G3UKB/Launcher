@@ -37,18 +37,21 @@ class TelnetBase(threading.Thread):
     def __init__(self, host, user, password):
         # Init base
         threading.Thread.__init__(self)
-        # print("\n\nTelnet ", host, user, password)
-        # Start a telnet session
-        self.__tn = telnetlib.Telnet(host)
-        # Logon with given credentials
-        self.__tn.read_until(b"login: ")
-        self.__tn.write((user +'\n').encode('ascii'))
-        if password:
-            self.__tn.read_until(b"Password: ")
-            self.__tn.write((password +'\n').encode('ascii'))
-        # Wait for the prompt
-        self.__tn.read_until(b"$")
-        print("Logon to %s successful" % (host))
+        print("\n\nTelnet ", host, user, password)
+        try:
+            # Start a telnet session
+            self.__tn = telnetlib.Telnet(host)
+            # Logon with given credentials
+            self.__tn.read_until(b"login: ")
+            self.__tn.write((user +'\n').encode('ascii'))
+            if password:
+                self.__tn.read_until(b"Password: ")
+                self.__tn.write((password +'\n').encode('ascii'))
+            # Wait for the prompt
+            self.__tn.read_until(b"$")
+            print("Logon to %s successful" % (host))
+        except Exception as e:
+            print ('Exception from TelnetBase.__init__()','Exception [%s][%s]' % (str(e), traceback.format_exc()))
     
     #-------------------------------------------------
     # Close session

@@ -76,6 +76,7 @@ class Sequencer:
     # Telnet command
     def __telnet(self, inst):
         telnet_inst = getInstance(inst[1])
+        print("\n\nTelnet command ", telnet_inst, inst)
         if telnet_inst == None:
             # Create the instance
             telnet_inst = TelnetClient(inst[1])
