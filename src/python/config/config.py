@@ -95,9 +95,9 @@ run_seq = {
     "HPSDR" : [
         # Turn on the HPSDR on port 2
         ["RELAY", "IP9258-1", 2],
-        # Start the client SDR application
-        ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibE/trunk/connector/Release"],
-        ["WINDOWS_CMD", "RUN_WITH_SHELL", "Connector", "SDRLibEConnector.exe"],
+        # Start the SDR client application (which starts the SDR server application)
+        ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibEConsole/trunk/src/python/main"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConsole", "python app_main.py"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "FCDProPlus" : [

@@ -64,8 +64,8 @@ class Sequencer:
             os.chdir(self.__cwd)
         elif cmd == 'RUN_NO_SHELL':
             # Run command in the same shell
-            prog = subprocess.Popen(path)
-            add_instance(name, prog)
+            prog = Popen(path)
+            addToCache(name, prog)
         elif cmd == 'RUN_WITH_SHELL':
             # Run command in a new shell
             prog = Popen(path, creationflags=CREATE_NEW_CONSOLE, shell=False)
