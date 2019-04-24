@@ -46,6 +46,7 @@ class AppMain:
         # Sequencer runs a set of commands to instantiate a system
         sequencer = Sequencer()
         addToCache("Sequencer", sequencer)
+        sequencer.start()
         
         # Create the main window
         self.__w = AppWindow()
@@ -59,6 +60,7 @@ class AppMain:
         telnet_inst = getInstance("IP5VSwitch")
         if telnet_inst != None:
             telnet_inst.terminate()
+        sequencer.terminate()
         
 #-------------------------------------------------
 # Start processing and wait for user to exit the application

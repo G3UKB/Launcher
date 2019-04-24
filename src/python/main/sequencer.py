@@ -50,6 +50,11 @@ class Sequencer(threading.Thread):
         self.__cwd = os.getcwd()
     
     #-------------------------------------------------
+    # Terminate the session  
+    def terminate(self):
+       self.__q.put("TERM")
+    
+    #-------------------------------------------------
     # Set callback  
     def set_callback(self, callback):
         
@@ -63,12 +68,13 @@ class Sequencer(threading.Thread):
         
     #-------------------------------------------------
     # Thread entry point  
-    def run(self, name):
+    def run(self):
         
         # Wait for commands
         while True:
             try:
                 seq_name = self.__q.get(timeout=2)
+                if seq_name == "TERM": break
                 seq = run_seq[seq_name]
                 for inst in seq:
                     print ("Sequence: %s" %(inst))
