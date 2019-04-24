@@ -44,14 +44,15 @@ class AppWindow(QMainWindow):
         
         #-------------------------------------------------
         # Set main panel and grid
-        panel = QWidget()
-        self.setCentralWidget(panel)
+        self.__panel = QWidget()
+        self.setCentralWidget(self.__panel)
         main_grid = QGridLayout()
-        panel.setLayout(main_grid)
+        self.__panel.setLayout(main_grid)
         
         #-------------------------------------------------
         # Get sequencer instance
         self.__seq = getInstance("Sequencer")
+        self.__seq.set_callback(self.__complete)
         
         #-------------------------------------------------
         # Populate
@@ -94,15 +95,33 @@ class AppWindow(QMainWindow):
     def __ip5v_evnt(self):
         self.__seq.execute_seq("IP5VSwitch")
         device_config["IP5VSwitch"]["STATE"] = True
+        self.__wait_completion()
         
     def __camera_evnt(self):
         self.__seq.execute_seq("Camera")
+        self.__wait_completion()
         
     def __ant_sw_evnt(self):
         self.__seq.execute_seq("AntennaSwitch")
+        self.__wait_completion()
         
     def __hpsdr_evnt(self):
         self.__seq.execute_seq("HPSDR")
+        self.__wait_completion()
         
     def __fcd_evnt(self):
         self.__seq.execute_seq("FCDProPlus")
+        self.__wait_completion()
+        
+    #-------------------------------------------------
+    # Callback procs
+    def __complete(self):
+        self.__panel.enabled(True)
+        
+    #-------------------------------------------------
+    # Helpers
+    def __wait_completion(self):
+        self.__panel.enabled(False)
+        
+    
+    

@@ -26,11 +26,20 @@
 # All imports
 from main.imports import *
 
-class Sequencer:
+#=====================================================
+# The sequencer for script execution
+#=====================================================
+class Sequencer(threading.Thread):
     
     #-------------------------------------------------
     # Constructor 
     def __init__(self):
+        # Init base
+        threading.Thread.__init__(self)
+        
+        # Create a q for communication
+        self.__q = queue.Queue()
+      
         self.__dispatch_table = {
             "WINDOWS_CMD" : self.__win_cmd,
             "TELNET" : self.__telnet,
@@ -41,16 +50,39 @@ class Sequencer:
         self.__cwd = os.getcwd()
     
     #-------------------------------------------------
-    # Run the given sequence  
-    def execute_seq(self, name):
+    # Set callback  
+    def set_callback(self, callback):
         
-        seq = run_seq[name]
-        for inst in seq:
-            print ("Sequence: %s" %(inst))
-            if not self.__dispatch_table[inst[0]](inst):
-                break
-        print ("End of sequence")
+        self.__callback = callback
+
+    #-------------------------------------------------
+    # Run the given sequence  
+    def execute_seq(self, seq_name):
+        
+        self.__q.put(seq_name)
+        
+    #-------------------------------------------------
+    # Thread entry point  
+    def run(self, name):
+        
+        # Wait for commands
+        while True:
+            try:
+                seq_name = self.__q.get(timeout=2)
+                seq = run_seq[seq_name]
+                for inst in seq:
+                    print ("Sequence: %s" %(inst))
+                    if not self.__dispatch_table[inst[0]](inst):
+                        break
+                print ("End of sequence")
+                # Let whoever know we are done
+                self.__callback()
+            except :
+                # Timeout
+                continue
             
+        print("Sequence thread terminating")
+        
     #-------------------------------------------------
     # Windows command
     def __win_cmd(self, inst):
