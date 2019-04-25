@@ -58,7 +58,7 @@ device_config = {
 run_seq = {
     "IP5VSwitch" : [
         # Turn on the IP5V RPi on IP-1 port 3
-        ["RELAY", "IP9258-1", 3],
+        ["RELAY", "IP9258-1", True, 3],
         # Wait for boot to complete
         ["SLEEP", 10],
         # Send command sequences to start the minimal HTML server on the RPi
@@ -69,9 +69,9 @@ run_seq = {
         # Ensure IP5VSwitch is on
         ["TEST", "IP5VSwitch"],
         # Turn on the light on IP-1 port 4
-        ["RELAY", "IP9258-1", 4],
+        ["RELAY", "IP9258-1", True, 4],
         # Turn on the RPi hosting the Camera on port 2
-        ["RELAY", "IP5VSwitch", 1],
+        ["RELAY", "IP5VSwitch", True, 1],
         # Wait for boot to complete
         ["SLEEP", 10],
         # Start the camera stream
@@ -85,7 +85,7 @@ run_seq = {
     ],
     "AntennaSwitch" : [
         # Turn on the Antenna Switch RPi on port 1
-        ["RELAY", "IP9258-1", 1],
+        ["RELAY", "IP9258-1", True, 1],
         # Wait for boot to complete
         ["SLEEP", 1],
         ["WINDOWS_CMD", "CD", "", "E:/Projects/AntennaSwitch/trunk/python"],
@@ -94,7 +94,7 @@ run_seq = {
     ],
     "HPSDR" : [
         # Turn on the HPSDR on port 2
-        ["RELAY", "IP9258-1", 2],
+        ["RELAY", "IP9258-1", True, 2],
         # Start the SDR client application (which starts the SDR server application)
         ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibEConsole/trunk/src/python/main"],
         ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConsole", "python app_main.py"],
@@ -104,7 +104,7 @@ run_seq = {
         # Ensure IP5VSwitch is on
         ["TEST", "IP5VSwitch"],
         # Turn on the RPi hosting the FCD on port 1
-        ["RELAY", "IP5VSwitch", 0],
+        ["RELAY", "IP5VSwitch", True, 0],
         # Wait for boot to complete
         ["SLEEP", 10],
         # Start the FCD server process

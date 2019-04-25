@@ -63,39 +63,39 @@ class AppWindow(QMainWindow):
     def __setup_ui(self, grid):
        
         ip5v_label = QLabel("IP 5v Switch")
-        ip5v_cb_on = QCheckBox("On")
+        self.__ip5v_cb_on = QCheckBox("On")
         ip5v_cb_off = QCheckBox("Off")
         self.__ip5v_grp = QButtonGroup()
         self.__ip5v_btn = QPushButton("Set")
-        self.__setup_func(grid, ip5v_label, ip5v_cb_on, ip5v_cb_off, self.__ip5v_grp, self.__ip5v_btn, self.__ip5v_evnt, 0)
+        self.__setup_func(grid, ip5v_label, self.__ip5v_cb_on, ip5v_cb_off, self.__ip5v_grp, self.__ip5v_btn, self.__ip5v_evnt, 0)
         
         camera_label = QLabel("Camera")
-        camera_cb_on = QCheckBox("On")
+        self.__camera_cb_on = QCheckBox("On")
         camera_cb_off = QCheckBox("Off")
         self.__camera_grp = QButtonGroup()
         self.__camera_btn = QPushButton("Set")
-        self.__setup_func(grid, camera_label, camera_cb_on, camera_cb_off, self.__camera_grp, self.__camera_btn, self.__camera_evnt, 1)
+        self.__setup_func(grid, camera_label, self.__camera_cb_on, camera_cb_off, self.__camera_grp, self.__camera_btn, self.__camera_evnt, 1)
         
         ant_sw_label = QLabel("Antenna Switch")
-        ant_sw_cb_on = QCheckBox("On")
+        self.__ant_sw_cb_on = QCheckBox("On")
         ant_sw_cb_off = QCheckBox("Off")
         self.__ant_sw_grp = QButtonGroup()
         self.__ant_sw_btn = QPushButton("Set")
-        self.__setup_func(grid, ant_sw_label, ant_sw_cb_on, ant_sw_cb_off, self.__ant_sw_grp, self.__ant_sw_btn, self.__ant_sw_evnt, 2)
+        self.__setup_func(grid, ant_sw_label, self.__ant_sw_cb_on, ant_sw_cb_off, self.__ant_sw_grp, self.__ant_sw_btn, self.__ant_sw_evnt, 2)
         
         hpsdr_label = QLabel("HPSDR")
-        hpsdr_cb_on = QCheckBox("On")
+        self.__hpsdr_cb_on = QCheckBox("On")
         hpsdr_cb_off = QCheckBox("Off")
         self.__hpsdr_grp = QButtonGroup()
         self.__hpsdr_btn = QPushButton("Set")
-        self.__setup_func(grid, hpsdr_label, hpsdr_cb_on, hpsdr_cb_off, self.__hpsdr_grp, self.__hpsdr_btn, self.__hpsdr_evnt, 3)
+        self.__setup_func(grid, hpsdr_label, self.__hpsdr_cb_on, hpsdr_cb_off, self.__hpsdr_grp, self.__hpsdr_btn, self.__hpsdr_evnt, 3)
         
         fcd_label = QLabel("FunCube Dongle Plus")
-        fcd_cb_on = QCheckBox("On")
+        self.__fcd_cb_on = QCheckBox("On")
         fcd_cb_off = QCheckBox("Off")
         self.__fcd_grp = QButtonGroup()
         self.__fcd_btn = QPushButton("Set")
-        self.__setup_func(grid, fcd_label, fcd_cb_on, fcd_cb_off, self.__fcd_grp, self.__fcd_btn, self.__fcd_evnt, 4)
+        self.__setup_func(grid, fcd_label, self.__fcd_cb_on, fcd_cb_off, self.__fcd_grp, self.__fcd_btn, self.__fcd_evnt, 4)
     
     #-------------------------------------------------
     # Setup one function
@@ -125,25 +125,30 @@ class AppWindow(QMainWindow):
     #-------------------------------------------------
     # Event procs
     def __ip5v_evnt(self):
-        self.__seq.execute_seq("IP5VSwitch")
-        device_config["IP5VSwitch"]["STATE"] = True
-        self.__wait_completion()
+        if self.__ip5v_cb_on.isChecked() :
+            self.__seq.execute_seq("IP5VSwitch")
+            device_config["IP5VSwitch"]["STATE"] = True
+            self.__wait_completion()
         
     def __camera_evnt(self):
-        self.__seq.execute_seq("Camera")
-        self.__wait_completion()
+        if self.__camera_cb_on.isChecked() :
+            self.__seq.execute_seq("Camera")
+            self.__wait_completion()
         
     def __ant_sw_evnt(self):
-        self.__seq.execute_seq("AntennaSwitch")
-        self.__wait_completion()
+        if self.__ant_sw_cb_on.isChecked() :
+            self.__seq.execute_seq("AntennaSwitch")
+            self.__wait_completion()
         
     def __hpsdr_evnt(self):
-        self.__seq.execute_seq("HPSDR")
-        self.__wait_completion()
+        if self.__hpsdr_cb_on.isChecked() :
+            self.__seq.execute_seq("HPSDR")
+            self.__wait_completion()
         
     def __fcd_evnt(self):
-        self.__seq.execute_seq("FCDProPlus")
-        self.__wait_completion()
+        if self.__fcd_cb_on.isChecked() :
+            self.__seq.execute_seq("FCDProPlus")
+            self.__wait_completion()
         
     #-------------------------------------------------
     # Callback procs

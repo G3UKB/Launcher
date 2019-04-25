@@ -128,11 +128,20 @@ class Sequencer(threading.Thread):
     # Relay command
     def __relay(self, inst):
         if inst[1]== "IP9258-1":
-            powerOn(device_config["IP9258-1"]["HOST"], inst[2])
+            if inst[2]:
+                powerOn(device_config["IP9258-1"]["HOST"], inst[3])
+            else:
+                powerOff(device_config["IP9258-1"]["HOST"], inst[3])
         elif inst[1]== "IP9258-2":
-            powerOn(device_config["IP9258-2"]["HOST"], inst[2])
+            if inst[2]:
+                powerOn(device_config["IP9258-2"]["HOST"], inst[3])
+            else:
+                powerOff(device_config["IP9258-2"]["HOST"], inst[3])
         elif inst[1]== "IP5VSwitch":
-            set_ip5v_relay(device_config["IP5VSwitch"]["HOST"], device_config["IP5VSwitch"]["PORT"], inst[2], "on")
+            if inst[2]:
+                set_ip5v_relay(device_config["IP5VSwitch"]["HOST"], device_config["IP5VSwitch"]["PORT"], inst[3], "on")
+            else:
+                set_ip5v_relay(device_config["IP5VSwitch"]["HOST"], device_config["IP5VSwitch"]["PORT"], inst[3], "off")
         return True
     
     #-------------------------------------------------
