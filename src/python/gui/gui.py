@@ -126,28 +126,52 @@ class AppWindow(QMainWindow):
     # Event procs
     def __ip5v_evnt(self):
         if self.__ip5v_cb_on.isChecked() :
-            self.__seq.execute_seq("IP5VSwitch")
+            self.__seq.execute_seq("IP5VSwitch.ON")
             device_config["IP5VSwitch"]["STATE"] = True
+            self.__wait_completion()
+        else:
+            self.__seq.execute_seq("IP5VSwitch.OFF")
+            device_config["IP5VSwitch"]["STATE"] = False
             self.__wait_completion()
         
     def __camera_evnt(self):
         if self.__camera_cb_on.isChecked() :
-            self.__seq.execute_seq("Camera")
+            self.__seq.execute_seq("Camera.ON")
+            device_config["Camera"]["STATE"] = True
+            self.__wait_completion()
+        else:
+            self.__seq.execute_seq("Camera.OFF")
+            device_config["Camera"]["STATE"] = False
             self.__wait_completion()
         
     def __ant_sw_evnt(self):
         if self.__ant_sw_cb_on.isChecked() :
-            self.__seq.execute_seq("AntennaSwitch")
+            self.__seq.execute_seq("AntennaSwitch.ON")
+            device_config["AntennaSwitch"]["STATE"] = True
+            self.__wait_completion()
+        else:
+            self.__seq.execute_seq("AntennaSwitch.OFF")
+            device_config["AntennaSwitch"]["STATE"] = False
             self.__wait_completion()
         
     def __hpsdr_evnt(self):
         if self.__hpsdr_cb_on.isChecked() :
-            self.__seq.execute_seq("HPSDR")
+            self.__seq.execute_seq("HPSDR.ON")
+            device_config["HPSDR"]["STATE"] = True
+            self.__wait_completion()
+        else:
+            self.__seq.execute_seq("HPSDR.OFF")
+            device_config["HPSDR"]["STATE"] = False
             self.__wait_completion()
         
     def __fcd_evnt(self):
         if self.__fcd_cb_on.isChecked() :
-            self.__seq.execute_seq("FCDProPlus")
+            self.__seq.execute_seq("FCDProPlus.ON")
+            device_config["FCDProPlus"]["STATE"] = True
+            self.__wait_completion()
+        else:
+            self.__seq.execute_seq("FCDProPlus.OFF")
+            device_config["FCDProPlus"]["STATE"] = False
             self.__wait_completion()
         
     #-------------------------------------------------

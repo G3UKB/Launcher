@@ -44,7 +44,9 @@ class Sequencer(threading.Thread):
             "WINDOWS_CMD" : self.__win_cmd,
             "TELNET" : self.__telnet,
             "RELAY" : self.__relay,
-            "TEST" : self.__test,
+            "DEPENDENCY" : self.__dependent,
+            "CONSTRAINT" : self.__constraint,
+            "RELIANCE" : self.__reliance,
             "SLEEP" : self.__sleep
         }
         self.__cwd = os.getcwd()
@@ -145,14 +147,32 @@ class Sequencer(threading.Thread):
         return True
     
     #-------------------------------------------------
-    # Test command
-    def __test(self, inst):
+    # Dependency command
+    def __dependent(self, inst):
         what = inst[1]
         if device_config[what]["STATE"] == False:
             print ("Sorry, dependency %s is not running!" %(what))
             return False
         return True
-
+    
+    #-------------------------------------------------
+    # Constraint command
+    def __constraint(self, inst):
+        what = inst[1]
+        if device_config[what]["STATE"] == True:
+            print ("Sorry, constraint %s is running!" %(what))
+            return False
+        return True
+    
+    #-------------------------------------------------
+    # Reliance command
+    def __reliance(self, inst):
+        what = inst[1]
+        if device_config[what]["STATE"] == True:
+            print ("Sorry, please stop %s first as it relies on this service!" %(what))
+            return False
+        return True
+    
     #-------------------------------------------------
     # Sleep command
     def __sleep(self, inst):

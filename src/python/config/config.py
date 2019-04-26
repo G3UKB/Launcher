@@ -42,21 +42,27 @@ device_config = {
     "Camera" : {
         "HOST" : '192.168.1.108',
         "USER" : 'pi',
-        "PASSWORD" : 'raspberry'
+        "PASSWORD" : 'raspberry',
+        "STATE" : False
     },
     "AntennaSwitch" : {
         "HOST" : '192.168.1.178',
-        "PORT" : 8888
+        "PORT" : 8888,
+        "STATE" : False
+    },
+    "HPSDR" : {
+        "STATE" : False
     },
     "FCD" : {
         "HOST" : '192.168.1.110',
         "USER" : 'pi',
-        "PASSWORD" : 'raspberry'
+        "PASSWORD" : 'raspberry',
+        "STATE" : False
     },
 }
 
 run_seq = {
-    "IP5VSwitch" : [
+    "IP5VSwitch.ON" : [
         # Turn on the IP5V RPi on IP-1 port 3
         ["RELAY", "IP9258-1", True, 3],
         # Wait for boot to complete
@@ -65,9 +71,19 @@ run_seq = {
         ["TELNET", "IP5VSwitch", "cd /home/pi/Projects/IP5vSwitch/src/python", "$"],
         ["TELNET", "IP5VSwitch", "python3 ip5v_web_min.py 2>/dev/null", "$"]
     ],
-    "Camera" : [
+    "IP5VSwitch.OFF" : [
+        ["RELIANCE", "Camera"],
+        ["RELIANCE", "FCDProPlus"],
+        # Shutdown the RPi
+        ["TELNET", "IP5VSwitch", "sudo shutdown -h now", "$"],
+        # Wait for shutdown to complete
+        ["SLEEP", 10],
+        # Turn off the IP5V RPi on IP-1 port 3
+        ["RELAY", "IP9258-1", False, 3],
+    ],
+    "Camera.ON" : [
         # Ensure IP5VSwitch is on
-        ["TEST", "IP5VSwitch"],
+        ["DEPENDENCY", "IP5VSwitch"],
         # Turn on the light on IP-1 port 4
         ["RELAY", "IP9258-1", True, 4],
         # Turn on the RPi hosting the Camera on port 2
@@ -83,7 +99,17 @@ run_seq = {
         ["WINDOWS_CMD", "RUN_WITH_SHELL", "Camera", "vlc.exe"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
-    "AntennaSwitch" : [
+    "Camera.OFF" : [
+        # Turn off the light on IP-1 port 4
+        ["RELAY", "IP9258-1", False, 4],
+        # Shutdown the RPi
+        ["TELNET", "Camera", "sudo shutdown -h now", "$"],
+        # Wait for shutdown to complete
+        ["SLEEP", 10],
+        # Turn off the RPi hosting the Camera on port 2
+        ["RELAY", "IP5VSwitch", False, 1],
+    ],
+    "AntennaSwitch.ON" : [
         # Turn on the Antenna Switch RPi on port 1
         ["RELAY", "IP9258-1", True, 1],
         # Wait for boot to complete
@@ -92,7 +118,13 @@ run_seq = {
         ["WINDOWS_CMD", "RUN_NO_SHELL", "AntSwitch", "python antswui.py"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
-    "HPSDR" : [
+    "AntennaSwitch.OFF" : [
+        # Turn off the Antenna Switch RPi on port 1
+        ["RELAY", "IP9258-1", False, 1],
+    ],
+    "HPSDR.ON" : [
+        # Can't run this and the FCD at the same time
+        ["CONSTRAINT", "FCDProPlus"],
         # Turn on the HPSDR on port 2
         ["RELAY", "IP9258-1", True, 2],
         # Start the SDR client application (which starts the SDR server application)
@@ -100,9 +132,15 @@ run_seq = {
         ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConsole", "python app_main.py"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
-    "FCDProPlus" : [
+    "HPSDR.OFF" : [
+        # Turn off the HPSDR on port 2
+        ["RELAY", "IP9258-1", False, 2],
+    ],
+    "FCDProPlus.ON" : [
+        # Can't run this and the HPSDR at the same time
+        ["CONSTRAINT", "HPSDR"],
         # Ensure IP5VSwitch is on
-        ["TEST", "IP5VSwitch"],
+        ["DEPENDENCY", "IP5VSwitch"],
         # Turn on the RPi hosting the FCD on port 1
         ["RELAY", "IP5VSwitch", True, 0],
         # Wait for boot to complete
@@ -114,5 +152,13 @@ run_seq = {
         ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibEConsole/trunk/src/python/main"],
         ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConsole", "python app_main.py"],
         ["WINDOWS_CMD", "CWD", "", ""]
+    ],
+    "FCDProPlus.OFF" : [
+        # Shutdown the RPi
+        ["TELNET", "FCDProPlus", "sudo shutdown -h now", "$"],
+        # Wait for shutdown to complete
+        ["SLEEP", 10],
+        # Turn off the RPi hosting the FCD on port 1
+        ["RELAY", "IP5VSwitch", False, 0],
     ]
 }
