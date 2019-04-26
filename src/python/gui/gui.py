@@ -97,21 +97,26 @@ class AppWindow(QMainWindow):
         self.__fcd_btn = QPushButton("Set")
         self.__setup_func(grid, fcd_label, self.__fcd_cb_on, fcd_cb_off, self.__fcd_grp, self.__fcd_btn, self.__fcd_evnt, 4)
     
+        # Add a logging area
+        self.__log = QPlainTextEdit()
+        grid.addWidget(self.__log, 5, 0, 1, 4)
+        self.__log.insertPlainText("Launcher init.\n")
+        
     #-------------------------------------------------
     # Setup one function
-    def __setup_func(self, grid, label, cb_on, cb_off, group, button, evnt, col):
+    def __setup_func(self, grid, label, cb_on, cb_off, group, button, evnt, line):
         
-        grid.addWidget(label, col, 0)
-        grid.addWidget(cb_on, col, 1)
+        grid.addWidget(label, line, 0)
+        grid.addWidget(cb_on, line, 1)
         cb_off.setChecked(True)
-        grid.addWidget(cb_off, col, 2)
+        grid.addWidget(cb_off, line, 2)
         group.setExclusive(True)
         group.addButton(cb_on)
         group.setId(cb_on, 0)
         group.addButton(cb_off)
         group.setId(cb_off, 1)
         button.clicked.connect(evnt)
-        grid.addWidget(button, col, 3)
+        grid.addWidget(button, line, 3)
         self.__setStyle(label, cb_on, cb_off, button)
         
     #-------------------------------------------------

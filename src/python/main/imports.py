@@ -45,7 +45,7 @@ from PyQt5.QtGui import QPalette, QColor, QFont, QIcon, QPainter, QPixmap, QPen
 from PyQt5.QtWidgets import QApplication, qApp, QMainWindow
 from PyQt5.QtWidgets import QWidget, QToolTip, QStyle, QStatusBar, QMainWindow, QDialog, QAction, QMessageBox, QInputDialog, QDialogButtonBox
 from PyQt5.QtWidgets import QGridLayout, QVBoxLayout, QHBoxLayout
-from PyQt5.QtWidgets import QFrame, QLabel, QButtonGroup, QPushButton, QRadioButton, QComboBox, QCheckBox, QSpinBox, QTabWidget, QLineEdit
+from PyQt5.QtWidgets import QFrame, QLabel, QButtonGroup, QPushButton, QRadioButton, QComboBox, QCheckBox, QSpinBox, QTabWidget, QLineEdit, QPlainTextEdit
 
 #=====================================================
 # Application imports
