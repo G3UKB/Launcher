@@ -37,7 +37,6 @@ class TelnetBase(threading.Thread):
     def __init__(self, host, user, password):
         # Init base
         threading.Thread.__init__(self)
-        print("\n\nTelnet ", host, user, password)
         try:
             # Start a telnet session
             self.__tn = telnetlib.Telnet(host)

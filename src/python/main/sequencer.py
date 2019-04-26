@@ -116,10 +116,8 @@ class Sequencer(threading.Thread):
     # Telnet command
     def __telnet(self, inst):
         telnet_inst = getInstance(inst[1])
-        print("\n\nTelnet command ", telnet_inst, inst)
         if telnet_inst == None:
             # Create the instance
-            print("Create inst")
             telnet_inst = TelnetClient(inst[1])
             addToCache(inst[1], telnet_inst)
             telnet_inst.start()
