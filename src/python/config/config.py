@@ -96,7 +96,7 @@ run_seq = {
         ["TELNET", "Camera", "./vlc.sh 2>/dev/null", "$"],
         # Start the client VLC (with the correct stream?)
         ["WINDOWS_CMD", "CD", "", "C:\Program Files (x86)\VideoLAN\VLC"],
-        ["WINDOWS_CMD", "RUN_WITH_SHELL", "Camera", "vlc.exe"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "CameraVLC", "vlc.exe"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "Camera.OFF" : [
@@ -108,6 +108,8 @@ run_seq = {
         ["SLEEP", 10],
         # Turn off the RPi hosting the Camera on port 2
         ["RELAY", "IP5VSwitch", False, 1],
+        # Terminate application
+        ["WINDOWS_CMD", "TERM", "CameraVLC", ""]
     ],
     "AntennaSwitch.ON" : [
         # Turn on the Antenna Switch RPi on port 1
@@ -115,12 +117,14 @@ run_seq = {
         # Wait for boot to complete
         ["SLEEP", 1],
         ["WINDOWS_CMD", "CD", "", "E:/Projects/AntennaSwitch/trunk/python"],
-        ["WINDOWS_CMD", "RUN_NO_SHELL", "AntSwitch", "python antswui.py"],
+        ["WINDOWS_CMD", "RUN_NO_SHELL", "AntSwitchApp", "python antswui.py"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "AntennaSwitch.OFF" : [
         # Turn off the Antenna Switch RPi on port 1
         ["RELAY", "IP9258-1", False, 1],
+        # Terminate application
+        ["WINDOWS_CMD", "TERM", "AntSwitchApp", ""]
     ],
     "HPSDR.ON" : [
         # Can't run this and the FCD at the same time
@@ -135,6 +139,8 @@ run_seq = {
     "HPSDR.OFF" : [
         # Turn off the HPSDR on port 2
         ["RELAY", "IP9258-1", False, 2],
+        # Terminate application
+        ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""]
     ],
     "FCDProPlus.ON" : [
         # Can't run this and the HPSDR at the same time
@@ -160,5 +166,7 @@ run_seq = {
         ["SLEEP", 10],
         # Turn off the RPi hosting the FCD on port 1
         ["RELAY", "IP5VSwitch", False, 0],
+        # Terminate application
+        ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""]
     ]
 }

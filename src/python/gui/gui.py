@@ -178,7 +178,7 @@ class AppWindow(QMainWindow):
             self.__seq.execute_seq("HPSDR.OFF")
             device_config["HPSDR"]["STATE"] = False
             self.__wait_completion()
-            self.__last_seq((False, "HPSDR"))
+            self.__last_seq = (False, "HPSDR")
         
     def __fcd_evnt(self):
         if self.__fcd_cb_on.isChecked() :

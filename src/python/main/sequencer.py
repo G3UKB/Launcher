@@ -113,6 +113,12 @@ class Sequencer(threading.Thread):
             # Run command in a new shell
             prog = Popen(path, creationflags=CREATE_NEW_CONSOLE, shell=False)
             addToCache(name, prog)
+        elif cmd == 'TERM':
+            # Get Popen object
+            obj = getInstance(name)
+            if obj != None:
+                obj.terminate()
+                
         return True
     
     #-------------------------------------------------
