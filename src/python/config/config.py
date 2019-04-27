@@ -124,7 +124,7 @@ run_seq = {
     ],
     "HPSDR.ON" : [
         # Can't run this and the FCD at the same time
-        ["CONSTRAINT", "FCDProPlus"],
+        ["CONSTRAINT", "FCD"],
         # Turn on the HPSDR on port 2
         ["RELAY", "IP9258-1", True, 2],
         # Start the SDR client application (which starts the SDR server application)

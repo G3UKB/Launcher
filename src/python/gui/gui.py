@@ -101,9 +101,9 @@ class AppWindow(QMainWindow):
         self.__setup_func(grid, fcd_label, self.__fcd_cb_on, self.__fcd_cb_off, self.__fcd_grp, self.__fcd_btn, self.__fcd_evnt, 4)
     
         # Add a logging area
-        self.__log = QPlainTextEdit()
+        self.__log = QTextEdit()
         grid.addWidget(self.__log, 5, 0, 1, 4)
-        self.__log.insertPlainText("Launcher init.\n")
+        self.__log.insertPlainText("Launcher initialised\n")
         
     #-------------------------------------------------
     # Setup one function
@@ -183,12 +183,12 @@ class AppWindow(QMainWindow):
     def __fcd_evnt(self):
         if self.__fcd_cb_on.isChecked() :
             self.__seq.execute_seq("FCDProPlus.ON")
-            device_config["FCDProPlus"]["STATE"] = True
+            device_config["FCD"]["STATE"] = True
             self.__wait_completion()
             self.__last_seq = (True, "FCDProPlus")
         else:
             self.__seq.execute_seq("FCDProPlus.OFF")
-            device_config["FCDProPlus"]["STATE"] = False
+            device_config["FCD"]["STATE"] = False
             self.__wait_completion()
             self.__last_seq = (False, "FCDProPlus")
         

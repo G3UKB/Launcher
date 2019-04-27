@@ -50,7 +50,7 @@ class TelnetBase(threading.Thread):
             self.__tn.read_until(b"$")
             self.message("Logon to %s successful" % (host))
         except Exception as e:
-            self.message ('Exception from TelnetBase.__init__()','Exception [%s][%s]' % (str(e), traceback.format_exc()))
+            self.message ('**ERROR** - Exception from TelnetBase.__init__()','Exception [%s][%s]' % (str(e), traceback.format_exc()))
     
     #-------------------------------------------------
     # Close session

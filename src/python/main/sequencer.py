@@ -153,7 +153,7 @@ class Sequencer(threading.Thread):
     def __dependent(self, inst):
         what = inst[1]
         if device_config[what]["STATE"] == False:
-            self.__message ("Sorry, dependency %s is not running!" %(what))
+            self.__message ("**WARN** - dependency %s is not running!" %(what))
             return False
         return True
     
@@ -162,7 +162,7 @@ class Sequencer(threading.Thread):
     def __constraint(self, inst):
         what = inst[1]
         if device_config[what]["STATE"] == True:
-            self.__message ("Sorry, constraint %s is running!" %(what))
+            self.__message ("**WARN** - constraint %s is running!" %(what))
             return False
         return True
     
@@ -171,7 +171,7 @@ class Sequencer(threading.Thread):
     def __reliance(self, inst):
         what = inst[1]
         if device_config[what]["STATE"] == True:
-            self.__message ("Sorry, please stop %s first as it relies on this service!" %(what))
+            self.__message ("**WARN** - please stop %s first as it relies on this service!" %(what))
             return False
         return True
     
