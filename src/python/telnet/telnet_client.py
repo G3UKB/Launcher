@@ -51,7 +51,7 @@ class TelnetClient(TelnetBase):
     #-------------------------------------------------
     # Thread entry point
     def run(self):
-        print('Started %s application...' % (self.__target))
+        self.message('Started %s application...' % (self.__target))
         # Wait for commands
         while True:
             try:
@@ -63,7 +63,7 @@ class TelnetClient(TelnetBase):
                 continue
             
         self.close()
-        print("Telnet session for application %s terminated" % (self.__target))
+        self.message("Telnet session for application %s terminated" % (self.__target))
     
     #-------------------------------------------------
     # Terminate the session  

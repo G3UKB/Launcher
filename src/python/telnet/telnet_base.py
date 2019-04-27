@@ -48,9 +48,9 @@ class TelnetBase(threading.Thread):
                 self.__tn.write((password +'\n').encode('ascii'))
             # Wait for the prompt
             self.__tn.read_until(b"$")
-            print("Logon to %s successful" % (host))
+            self.message("Logon to %s successful" % (host))
         except Exception as e:
-            print ('Exception from TelnetBase.__init__()','Exception [%s][%s]' % (str(e), traceback.format_exc()))
+            self.message ('Exception from TelnetBase.__init__()','Exception [%s][%s]' % (str(e), traceback.format_exc()))
     
     #-------------------------------------------------
     # Close session
@@ -58,14 +58,20 @@ class TelnetBase(threading.Thread):
         
         self.__tn.read_very_eager().decode('ascii')
         self.__tn.write(b"exit\n")
+    
+    #-------------------------------------------------
+    # Set callback  
+    def set_callback(self, message):
         
+        self.message = message
+
     #-------------------------------------------------
     # Execute given cmd and read until resp
     def execute(self, cmd, resp):
         
         self.__tn.write((cmd + '\n').encode('ascii'))
         sleep(0.2)
-        print(self.__tn.read_very_eager().decode('ascii'))
+        self.message (self.__tn.read_very_eager().decode('ascii'))
         #self.__tn.read_until(resp.encode('ascii'))
 
     

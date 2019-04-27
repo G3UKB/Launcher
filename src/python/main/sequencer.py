@@ -58,9 +58,10 @@ class Sequencer(threading.Thread):
     
     #-------------------------------------------------
     # Set callback  
-    def set_callback(self, callback):
+    def set_callback(self, complete, message):
         
-        self.__callback = callback
+        self.__complete = complete
+        self.__message = message
 
     #-------------------------------------------------
     # Run the given sequence  
@@ -79,19 +80,19 @@ class Sequencer(threading.Thread):
                 if seq_name == "TERM": break
                 seq = run_seq[seq_name]
                 for inst in seq:
-                    print ("Sequence: %s" %(inst))
+                    self.__message ("Sequence: %s" %(inst))
                     if not self.__dispatch_table[inst[0]](inst):
                         # Let whoever know we are done with error
-                        self.__callback(False)
+                        self.__complete(False)
                         break
-                print ("End of sequence")
+                self.__message ("End of sequence")
                 # Let whoever know we are done successful
-                self.__callback(True)
+                self.__complete(True)
             except :
                 # Timeout
                 continue
             
-        print("Sequence thread terminating")
+        self.__message("Sequence thread terminating")
         
     #-------------------------------------------------
     # Windows command
@@ -122,6 +123,7 @@ class Sequencer(threading.Thread):
             # Create the instance
             telnet_inst = TelnetClient(inst[1])
             addToCache(inst[1], telnet_inst)
+            telnet_inst.set_callback (self.__message)
             telnet_inst.start()
         telnet_inst.add_cmd([inst[2], inst[3]])
         return True
@@ -151,7 +153,7 @@ class Sequencer(threading.Thread):
     def __dependent(self, inst):
         what = inst[1]
         if device_config[what]["STATE"] == False:
-            print ("Sorry, dependency %s is not running!" %(what))
+            self.__message ("Sorry, dependency %s is not running!" %(what))
             return False
         return True
     
@@ -160,7 +162,7 @@ class Sequencer(threading.Thread):
     def __constraint(self, inst):
         what = inst[1]
         if device_config[what]["STATE"] == True:
-            print ("Sorry, constraint %s is running!" %(what))
+            self.__message ("Sorry, constraint %s is running!" %(what))
             return False
         return True
     
@@ -169,7 +171,7 @@ class Sequencer(threading.Thread):
     def __reliance(self, inst):
         what = inst[1]
         if device_config[what]["STATE"] == True:
-            print ("Sorry, please stop %s first as it relies on this service!" %(what))
+            self.__message ("Sorry, please stop %s first as it relies on this service!" %(what))
             return False
         return True
     

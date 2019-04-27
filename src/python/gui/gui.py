@@ -52,7 +52,7 @@ class AppWindow(QMainWindow):
         #-------------------------------------------------
         # Get sequencer instance
         self.__seq = getInstance("Sequencer")
-        self.__seq.set_callback(self.__complete)
+        self.__seq.set_callback(self.__complete, self.__message)
         
         #-------------------------------------------------
         # Populate
@@ -137,43 +137,43 @@ class AppWindow(QMainWindow):
             self.__seq.execute_seq("IP5VSwitch.ON")
             device_config["IP5VSwitch"]["STATE"] = True
             self.__wait_completion()
-            self.__last_seq((True, "IP5VSwitch"))
+            self.__last_seq = (True, "IP5VSwitch")
         else:
             self.__seq.execute_seq("IP5VSwitch.OFF")
             device_config["IP5VSwitch"]["STATE"] = False
             self.__wait_completion()
-            self.__last_seq((False, "IP5VSwitch"))
+            self.__last_seq = (False, "IP5VSwitch")
         
     def __camera_evnt(self):
         if self.__camera_cb_on.isChecked() :
             self.__seq.execute_seq("Camera.ON")
             device_config["Camera"]["STATE"] = True
             self.__wait_completion()
-            self.__last_seq((True, "Camera"))
+            self.__last_seq = (True, "Camera")
         else:
             self.__seq.execute_seq("Camera.OFF")
             device_config["Camera"]["STATE"] = False
             self.__wait_completion()
-            self.__last_seq((False, "Camera"))
+            self.__last_seq = (False, "Camera")
         
     def __ant_sw_evnt(self):
         if self.__ant_sw_cb_on.isChecked() :
             self.__seq.execute_seq("AntennaSwitch.ON")
             device_config["AntennaSwitch"]["STATE"] = True
             self.__wait_completion()
-            self.__last_seq((True, "AntennaSwitch"))
+            self.__last_seq = (True, "AntennaSwitch")
         else:
             self.__seq.execute_seq("AntennaSwitch.OFF")
             device_config["AntennaSwitch"]["STATE"] = False
             self.__wait_completion()
-            self.__last_seq((False, "AntennaSwitch"))
+            self.__last_seq = (False, "AntennaSwitch")
         
     def __hpsdr_evnt(self):
         if self.__hpsdr_cb_on.isChecked() :
             self.__seq.execute_seq("HPSDR.ON")
             device_config["HPSDR"]["STATE"] = True
             self.__wait_completion()
-            self.__last_seq((True, "HPSDR"))
+            self.__last_seq = (True, "HPSDR")
         else:
             self.__seq.execute_seq("HPSDR.OFF")
             device_config["HPSDR"]["STATE"] = False
@@ -185,15 +185,16 @@ class AppWindow(QMainWindow):
             self.__seq.execute_seq("FCDProPlus.ON")
             device_config["FCDProPlus"]["STATE"] = True
             self.__wait_completion()
-            self.__last_seq((True, "FCDProPlus"))
+            self.__last_seq = (True, "FCDProPlus")
         else:
             self.__seq.execute_seq("FCDProPlus.OFF")
             device_config["FCDProPlus"]["STATE"] = False
             self.__wait_completion()
-            self.__last_seq((False, "FCDProPlus"))
+            self.__last_seq = (False, "FCDProPlus")
         
     #-------------------------------------------------
     # Callback procs
+    # Sequence complete
     def __complete(self, result):
         if result == False:
             # The sequence failed so we need to adjust the UI
@@ -207,7 +208,7 @@ class AppWindow(QMainWindow):
                     "HPSDR": self.__hpsdr_cb_off,
                     "FCDProPlus": self.__fcd_cb_off,
                 }
-                lookup[dev].setChecked()
+                lookup[dev].setChecked(True)
             else:
                 # We were trying to turn the device off so we fail to the on state
                 lookup = {
@@ -217,9 +218,14 @@ class AppWindow(QMainWindow):
                     "HPSDR": self.__hpsdr_cb_on,
                     "FCDProPlus": self.__fcd_cb_on,
                 }
-                lookup[dev].setChecked()
+                lookup[dev].setChecked(True)
         self.__panel.setEnabled(True)
-        
+    
+    #-------------------------------------------------
+    # Message output
+    def __message (self, message):
+        self.__log.insertPlainText(message + "\n")
+    
     #-------------------------------------------------
     # Helpers
     def __wait_completion(self):
