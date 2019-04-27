@@ -81,10 +81,12 @@ class Sequencer(threading.Thread):
                 for inst in seq:
                     print ("Sequence: %s" %(inst))
                     if not self.__dispatch_table[inst[0]](inst):
+                        # Let whoever know we are done with error
+                        self.__callback(False)
                         break
                 print ("End of sequence")
-                # Let whoever know we are done
-                self.__callback()
+                # Let whoever know we are done successful
+                self.__callback(True)
             except :
                 # Timeout
                 continue

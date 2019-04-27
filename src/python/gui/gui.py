@@ -57,6 +57,9 @@ class AppWindow(QMainWindow):
         #-------------------------------------------------
         # Populate
         self.__setup_ui(main_grid)
+        
+        # Holds last seq
+        self.__last_seq = None
          
     #-------------------------------------------------
     # Setup the UI
@@ -64,38 +67,38 @@ class AppWindow(QMainWindow):
        
         ip5v_label = QLabel("IP 5v Switch")
         self.__ip5v_cb_on = QCheckBox("On")
-        ip5v_cb_off = QCheckBox("Off")
+        self.__ip5v_cb_off = QCheckBox("Off")
         self.__ip5v_grp = QButtonGroup()
         self.__ip5v_btn = QPushButton("Set")
-        self.__setup_func(grid, ip5v_label, self.__ip5v_cb_on, ip5v_cb_off, self.__ip5v_grp, self.__ip5v_btn, self.__ip5v_evnt, 0)
+        self.__setup_func(grid, ip5v_label, self.__ip5v_cb_on, self.__ip5v_cb_off, self.__ip5v_grp, self.__ip5v_btn, self.__ip5v_evnt, 0)
         
         camera_label = QLabel("Camera")
         self.__camera_cb_on = QCheckBox("On")
-        camera_cb_off = QCheckBox("Off")
+        self.__camera_cb_off = QCheckBox("Off")
         self.__camera_grp = QButtonGroup()
         self.__camera_btn = QPushButton("Set")
-        self.__setup_func(grid, camera_label, self.__camera_cb_on, camera_cb_off, self.__camera_grp, self.__camera_btn, self.__camera_evnt, 1)
+        self.__setup_func(grid, camera_label, self.__camera_cb_on, self.__camera_cb_off, self.__camera_grp, self.__camera_btn, self.__camera_evnt, 1)
         
         ant_sw_label = QLabel("Antenna Switch")
         self.__ant_sw_cb_on = QCheckBox("On")
-        ant_sw_cb_off = QCheckBox("Off")
+        self.__ant_sw_cb_off = QCheckBox("Off")
         self.__ant_sw_grp = QButtonGroup()
         self.__ant_sw_btn = QPushButton("Set")
-        self.__setup_func(grid, ant_sw_label, self.__ant_sw_cb_on, ant_sw_cb_off, self.__ant_sw_grp, self.__ant_sw_btn, self.__ant_sw_evnt, 2)
+        self.__setup_func(grid, ant_sw_label, self.__ant_sw_cb_on, self.__ant_sw_cb_off, self.__ant_sw_grp, self.__ant_sw_btn, self.__ant_sw_evnt, 2)
         
         hpsdr_label = QLabel("HPSDR")
         self.__hpsdr_cb_on = QCheckBox("On")
-        hpsdr_cb_off = QCheckBox("Off")
+        self.__hpsdr_cb_off = QCheckBox("Off")
         self.__hpsdr_grp = QButtonGroup()
         self.__hpsdr_btn = QPushButton("Set")
-        self.__setup_func(grid, hpsdr_label, self.__hpsdr_cb_on, hpsdr_cb_off, self.__hpsdr_grp, self.__hpsdr_btn, self.__hpsdr_evnt, 3)
+        self.__setup_func(grid, hpsdr_label, self.__hpsdr_cb_on, self.__hpsdr_cb_off, self.__hpsdr_grp, self.__hpsdr_btn, self.__hpsdr_evnt, 3)
         
         fcd_label = QLabel("FunCube Dongle Plus")
         self.__fcd_cb_on = QCheckBox("On")
-        fcd_cb_off = QCheckBox("Off")
+        self.__fcd_cb_off = QCheckBox("Off")
         self.__fcd_grp = QButtonGroup()
         self.__fcd_btn = QPushButton("Set")
-        self.__setup_func(grid, fcd_label, self.__fcd_cb_on, fcd_cb_off, self.__fcd_grp, self.__fcd_btn, self.__fcd_evnt, 4)
+        self.__setup_func(grid, fcd_label, self.__fcd_cb_on, self.__fcd_cb_off, self.__fcd_grp, self.__fcd_btn, self.__fcd_evnt, 4)
     
         # Add a logging area
         self.__log = QPlainTextEdit()
@@ -134,54 +137,87 @@ class AppWindow(QMainWindow):
             self.__seq.execute_seq("IP5VSwitch.ON")
             device_config["IP5VSwitch"]["STATE"] = True
             self.__wait_completion()
+            self.__last_seq((True, "IP5VSwitch"))
         else:
             self.__seq.execute_seq("IP5VSwitch.OFF")
             device_config["IP5VSwitch"]["STATE"] = False
             self.__wait_completion()
+            self.__last_seq((False, "IP5VSwitch"))
         
     def __camera_evnt(self):
         if self.__camera_cb_on.isChecked() :
             self.__seq.execute_seq("Camera.ON")
             device_config["Camera"]["STATE"] = True
             self.__wait_completion()
+            self.__last_seq((True, "Camera"))
         else:
             self.__seq.execute_seq("Camera.OFF")
             device_config["Camera"]["STATE"] = False
             self.__wait_completion()
+            self.__last_seq((False, "Camera"))
         
     def __ant_sw_evnt(self):
         if self.__ant_sw_cb_on.isChecked() :
             self.__seq.execute_seq("AntennaSwitch.ON")
             device_config["AntennaSwitch"]["STATE"] = True
             self.__wait_completion()
+            self.__last_seq((True, "AntennaSwitch"))
         else:
             self.__seq.execute_seq("AntennaSwitch.OFF")
             device_config["AntennaSwitch"]["STATE"] = False
             self.__wait_completion()
+            self.__last_seq((False, "AntennaSwitch"))
         
     def __hpsdr_evnt(self):
         if self.__hpsdr_cb_on.isChecked() :
             self.__seq.execute_seq("HPSDR.ON")
             device_config["HPSDR"]["STATE"] = True
             self.__wait_completion()
+            self.__last_seq((True, "HPSDR"))
         else:
             self.__seq.execute_seq("HPSDR.OFF")
             device_config["HPSDR"]["STATE"] = False
             self.__wait_completion()
+            self.__last_seq((False, "HPSDR"))
         
     def __fcd_evnt(self):
         if self.__fcd_cb_on.isChecked() :
             self.__seq.execute_seq("FCDProPlus.ON")
             device_config["FCDProPlus"]["STATE"] = True
             self.__wait_completion()
+            self.__last_seq((True, "FCDProPlus"))
         else:
             self.__seq.execute_seq("FCDProPlus.OFF")
             device_config["FCDProPlus"]["STATE"] = False
             self.__wait_completion()
+            self.__last_seq((False, "FCDProPlus"))
         
     #-------------------------------------------------
     # Callback procs
-    def __complete(self):
+    def __complete(self, result):
+        if result == False:
+            # The sequence failed so we need to adjust the UI
+            state, dev = self.__last_seq
+            if state:
+                # We were trying to turn the device on so we fail to the off state
+                lookup = {
+                    "IP5VSwitch": self.__ip5v_cb_off,
+                    "Camera": self.__camera_cb_off,
+                    "AntennaSwitch": self.__ant_sw_cb_off,
+                    "HPSDR": self.__hpsdr_cb_off,
+                    "FCDProPlus": self.__fcd_cb_off,
+                }
+                lookup[dev].setChecked()
+            else:
+                # We were trying to turn the device off so we fail to the on state
+                lookup = {
+                    "IP5VSwitch": self.__ip5v_cb_on,
+                    "Camera": self.__camera_cb_on,
+                    "AntennaSwitch": self.__ant_sw_cb_on,
+                    "HPSDR": self.__hpsdr_cb_on,
+                    "FCDProPlus": self.__fcd_cb_on,
+                }
+                lookup[dev].setChecked()
         self.__panel.setEnabled(True)
         
     #-------------------------------------------------
