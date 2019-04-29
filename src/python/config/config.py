@@ -131,15 +131,19 @@ run_seq = {
         ["CONSTRAINT", "FCD"],
         # Turn on the HPSDR on port 2
         ["RELAY", "IP9258-1", True, 2],
-        # Start the SDR client application (which starts the SDR server application)
+        # Start the SDRLibE server application
+        ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibE/trunk/connector/Release"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConnector", "SDRLibEConnector.exe"],
+        # Start the SDR client application
         ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibEConsole/trunk/src/python/main"],
-        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConsole", "python app_main.py"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConsole", "python app_main.py manual"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "HPSDR.OFF" : [
         # Turn off the HPSDR on port 2
         ["RELAY", "IP9258-1", False, 2],
-        # Terminate application
+        # Terminate applications
+        ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""]
         ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""]
     ],
     "FCDProPlus.ON" : [
@@ -154,9 +158,12 @@ run_seq = {
         # Start the FCD server process
         ["TELNET", "FCD", "cd /home/pi/FCD", "$"],
         ["TELNET", "FCD", "./SDRAlsaSrv.exe", "$"],
-        # Start the SDR client application (which starts the SDR server application)
+        # Start the SDRLibE server application
+        ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibE/trunk/connector/Release"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConnector", "SDRLibEConnector.exe"],
+        # Start the SDR client application
         ["WINDOWS_CMD", "CD", "", "E:/Projects/SDRLibEConsole/trunk/src/python/main"],
-        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConsole", "python app_main.py"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConsole", "python app_main.py manual"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "FCDProPlus.OFF" : [
@@ -166,7 +173,8 @@ run_seq = {
         ["SLEEP", 10],
         # Turn off the RPi hosting the FCD on port 1
         ["RELAY", "IP5VSwitch", False, 0],
-        # Terminate application
+        # Terminate applications
+        ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""]
         ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""]
     ]
 }
