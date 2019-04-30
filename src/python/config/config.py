@@ -143,7 +143,7 @@ run_seq = {
         # Turn off the HPSDR on port 2
         ["RELAY", "IP9258-1", False, 2],
         # Terminate applications
-        ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""]
+        ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""],
         ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""]
     ],
     "FCDProPlus.ON" : [
@@ -174,7 +174,7 @@ run_seq = {
         # Turn off the RPi hosting the FCD on port 1
         ["RELAY", "IP5VSwitch", False, 0],
         # Terminate applications
-        ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""]
+        ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""],
         ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""]
     ]
 }

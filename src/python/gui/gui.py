@@ -26,6 +26,8 @@
 # All imports
 from main.imports import *
 
+IDLE_TICKER = 100
+
 class AppWindow(QMainWindow):
     
     #-------------------------------------------------
@@ -46,8 +48,13 @@ class AppWindow(QMainWindow):
         # Set main panel and grid
         self.__panel = QWidget()
         self.setCentralWidget(self.__panel)
+        # Add a box layout
+        main_box = QVBoxLayout()
+        self.__panel.setLayout(main_box)
+        sub_panel = QWidget()
+        main_box.addWidget(sub_panel)
         main_grid = QGridLayout()
-        self.__panel.setLayout(main_grid)
+        sub_panel.setLayout(main_grid)
         
         #-------------------------------------------------
         # Get sequencer instance
@@ -58,8 +65,18 @@ class AppWindow(QMainWindow):
         # Populate
         self.__setup_ui(main_grid)
         
+        # Add a logging area
+        self.__log = QTextEdit()
+        main_box.addWidget(self.__log)
+        self.__log.insertPlainText("Launcher initialised\n")
+        
         # Holds last seq
         self.__last_seq = None
+        
+        # Dispatch worker threads to the main thread
+        # Create a q for communication
+        self.__q = queue.Queue()
+        QTimer.singleShot(IDLE_TICKER, self.timer_evnt)
          
     #-------------------------------------------------
     # Setup the UI
@@ -100,11 +117,6 @@ class AppWindow(QMainWindow):
         self.__fcd_btn = QPushButton("Set")
         self.__setup_func(grid, fcd_label, self.__fcd_cb_on, self.__fcd_cb_off, self.__fcd_grp, self.__fcd_btn, self.__fcd_evnt, 4)
     
-        # Add a logging area
-        self.__log = QTextEdit()
-        grid.addWidget(self.__log, 5, 0, 1, 4)
-        self.__log.insertPlainText("Launcher initialised\n")
-        
     #-------------------------------------------------
     # Setup one function
     def __setup_func(self, grid, label, cb_on, cb_off, group, button, evnt, line):
@@ -191,6 +203,20 @@ class AppWindow(QMainWindow):
             device_config["FCD"]["STATE"] = False
             self.__wait_completion()
             self.__last_seq = (False, "FCDProPlus")
+    
+    #-------------------------------------------------
+    def timer_evnt(self):
+        # Process any messages
+        try:
+            while True:
+                msg = self.__q.get_nowait()
+                self.__log.insertPlainText(msg)
+                self.__log.ensureCursorVisible()
+        except:
+            pass
+        
+        # Next kick
+        QTimer.singleShot(IDLE_TICKER, self.timer_evnt)
         
     #-------------------------------------------------
     # Callback procs
@@ -224,7 +250,7 @@ class AppWindow(QMainWindow):
     #-------------------------------------------------
     # Message output
     def __message (self, message):
-        self.__log.insertPlainText(message + "\n")
+        self.__q.put(message + "\n")
     
     #-------------------------------------------------
     # Helpers
