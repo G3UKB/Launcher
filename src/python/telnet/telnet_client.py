@@ -33,15 +33,10 @@ class TelnetClient(TelnetBase):
     
     #-------------------------------------------------
     # Constructor
-    def __init__(self, target):
+    def __init__(self):
       # Create a q
       self.__q = queue.Queue()
-      self.__target = target
-      self.__config = device_config[target]
-      host = self.__config["HOST"]
-      user = self.__config["USER"]
-      password = self.__config["PASSWORD"]
-      super(TelnetClient, self).__init__(host, user, password)
+      super(TelnetClient, self).__init__()
     
     #-------------------------------------------------
     # Add a command
@@ -51,7 +46,7 @@ class TelnetClient(TelnetBase):
     #-------------------------------------------------
     # Thread entry point
     def run(self):
-        self.message('Started %s application...' % (self.__target))
+        self.message('Started %s application...' % (self.target))
         # Wait for commands
         while True:
             try:
@@ -63,7 +58,7 @@ class TelnetClient(TelnetBase):
                 continue
             
         self.close()
-        self.message("Telnet session for application %s terminated" % (self.__target))
+        self.message("Telnet session for application %s terminated" % (self.target))
     
     #-------------------------------------------------
     # Terminate the session  

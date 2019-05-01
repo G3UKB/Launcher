@@ -34,12 +34,23 @@ class TelnetBase(threading.Thread):
     
     #-------------------------------------------------
     # Constructor
-    def __init__(self, host, user, password):
+    def __init__(self):
         # Init base
         threading.Thread.__init__(self)
+        
+    #-------------------------------------------------
+    # Connect session
+    def connect(self, target):
+        
+        self.target = target
+        self.__config = device_config[target]
+        host = self.__config["HOST"]
+        user = self.__config["USER"]
+        password = self.__config["PASSWORD"]
         try:
             # Start a telnet session
             self.__tn = telnetlib.Telnet(host)
+            print(self.__tn)
             # Logon with given credentials
             self.__tn.read_until(b"login: ")
             self.__tn.write((user +'\n').encode('ascii'))
