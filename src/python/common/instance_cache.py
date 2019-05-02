@@ -53,3 +53,17 @@ def getInstance(name):
         return instCache[name]
     else:
         return None
+
+#-------------------------------------------------
+# Remove an instance from the cache    
+def removeInstance(name):
+    """
+    Remove the one and only class instance
+    
+    name    --  name of the instance
+    
+    """
+    
+    if name in instCache:
+        del instCache[name]
+    

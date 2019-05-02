@@ -43,6 +43,7 @@ class Sequencer(threading.Thread):
         self.__dispatch_table = {
             "WINDOWS_CMD" : self.__win_cmd,
             "TELNET" : self.__telnet,
+            "TELNET_CLOSE" : self.__telnet_close,
             "RELAY" : self.__relay,
             "DEPENDENCY" : self.__dependent,
             "CONSTRAINT" : self.__constraint,
@@ -118,6 +119,8 @@ class Sequencer(threading.Thread):
             obj = getInstance(name)
             if obj != None:
                 obj.terminate()
+            # Must remove as the program was terminated
+            removeInstance(name)
                 
         return True
     
@@ -135,6 +138,15 @@ class Sequencer(threading.Thread):
         telnet_inst.add_cmd([inst[2], inst[3]])
         return True
     
+    #-------------------------------------------------
+    # Telnet close
+    def __telnet_close(self, inst):
+        # Close the telnet session and remove the instance
+        telnet_inst = getInstance(inst[1])
+        if telnet_inst != None:
+           telnet_inst.terminate()
+           removeInstance(inst[1])
+           
     #-------------------------------------------------
     # Relay command
     def __relay(self, inst):

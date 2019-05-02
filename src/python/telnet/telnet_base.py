@@ -66,8 +66,7 @@ class TelnetBase(threading.Thread):
     # Close session
     def close(self):
         
-        self.__tn.read_very_eager().decode('ascii')
-        self.__tn.write(b"exit\n")
+        self.__tn.close()
     
     #-------------------------------------------------
     # Set callback  

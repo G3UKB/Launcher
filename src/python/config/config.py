@@ -80,6 +80,8 @@ run_seq = {
         ["SLEEP", 10],
         # Turn off the IP5V RPi on IP-1 port 3
         ["RELAY", "IP9258-1", False, 3],
+        # Close telnet
+        ["TELNET_CLOSE", "IP5VSwitch"]
     ],
     "Camera.ON" : [
         # Ensure IP5VSwitch is on
@@ -109,7 +111,9 @@ run_seq = {
         # Turn off the RPi hosting the Camera on port 2
         ["RELAY", "IP5VSwitch", False, 1],
         # Terminate application
-        ["WINDOWS_CMD", "TERM", "CameraVLC", ""]
+        ["WINDOWS_CMD", "TERM", "CameraVLC", ""],
+        # Close telnet
+        ["TELNET_CLOSE", "Camera"]
     ],
     "AntennaSwitch.ON" : [
         # Turn on the Antenna Switch RPi on port 1
@@ -175,6 +179,8 @@ run_seq = {
         ["RELAY", "IP5VSwitch", False, 0],
         # Terminate applications
         ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""],
-        ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""]
+        ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""],
+        # Close telnet
+        ["TELNET_CLOSE", "FCDProPlus"]
     ]
 }
