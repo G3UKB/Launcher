@@ -50,7 +50,6 @@ class TelnetBase(threading.Thread):
         try:
             # Start a telnet session
             self.__tn = telnetlib.Telnet(host)
-            print(self.__tn)
             # Logon with given credentials
             self.__tn.read_until(b"login: ")
             self.__tn.write((user +'\n').encode('ascii'))
