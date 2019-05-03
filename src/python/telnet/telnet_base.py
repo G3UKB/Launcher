@@ -45,11 +45,13 @@ class TelnetBase(threading.Thread):
         self.target = target
         self.__config = device_config[target]
         host = self.__config["HOST"]
+        port = 23
+        timeout = 10
         user = self.__config["USER"]
         password = self.__config["PASSWORD"]
         try:
             # Start a telnet session
-            self.__tn = telnetlib.Telnet(host)
+            self.__tn = telnetlib.Telnet(host, port, timeout)
             # Logon with given credentials
             self.__tn.read_until(b"login: ")
             self.__tn.write((user +'\n').encode('ascii'))
@@ -59,8 +61,13 @@ class TelnetBase(threading.Thread):
             # Wait for the prompt
             self.__tn.read_until(b"$")
             self.message("Logon to %s successful" % (host))
+        except socket.timeout:
+            self.message ('**ERROR** - Telnet connect timeout!')
+            return False
         except Exception as e:
-            self.message ('**ERROR** - Exception from TelnetBase.__init__()','Exception [%s][%s]' % (str(e), traceback.format_exc()))
+            self.message ('**ERROR** - Exception from TelnetBase.__init__() [%s][%s]' % (str(e), traceback.format_exc()))
+            return False
+        return True
     
     #-------------------------------------------------
     # Close session
@@ -78,9 +85,11 @@ class TelnetBase(threading.Thread):
     # Execute given cmd and read until resp
     def execute(self, cmd, resp):
         
-        self.__tn.write((cmd + '\n').encode('ascii'))
-        sleep(0.2)
-        self.message (self.__tn.read_very_eager().decode('ascii'))
-        #self.__tn.read_until(resp.encode('ascii'))
+        try:
+            self.__tn.write((cmd + '\n').encode('ascii'))
+            sleep(0.2)
+            self.message ('Telnet resp: %s' % (self.__tn.read_until(resp.encode('ascii'), 2)))
+        except EOFError:
+            self.message('**ERROR** - EOF when executing Telent command!')
 
     

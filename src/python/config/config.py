@@ -73,7 +73,7 @@ run_seq = {
     ],
     "IP5VSwitch.OFF" : [
         ["RELIANCE", "Camera"],
-        ["RELIANCE", "FCDProPlus"],
+        ["RELIANCE", "FCD"],
         # Shutdown the RPi
         ["TELNET", "IP5VSwitch", "sudo shutdown -h now", "$"],
         # Wait for shutdown to complete

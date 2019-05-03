@@ -33,6 +33,7 @@ import urllib
 from urllib import request
 import telnetlib
 import threading
+import socket
 import queue
 from time import sleep
 import pprint

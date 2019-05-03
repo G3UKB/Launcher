@@ -131,10 +131,12 @@ class Sequencer(threading.Thread):
         if telnet_inst == None:
             # Create the instance
             telnet_inst = TelnetClient()
-            addToCache(inst[1], telnet_inst)
             telnet_inst.set_callback (self.__message)
-            telnet_inst.connect(inst[1])
-            telnet_inst.start()
+            if telnet_inst.connect(inst[1]):
+                addToCache(inst[1], telnet_inst)
+                telnet_inst.start()
+            else:
+                return False
         telnet_inst.add_cmd([inst[2], inst[3]])
         return True
     
@@ -146,6 +148,7 @@ class Sequencer(threading.Thread):
         if telnet_inst != None:
            telnet_inst.terminate()
            removeInstance(inst[1])
+        return True
            
     #-------------------------------------------------
     # Relay command

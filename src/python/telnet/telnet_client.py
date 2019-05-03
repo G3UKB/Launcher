@@ -24,6 +24,8 @@
 #
 
 # All imports
+import sys
+sys.path.append('..')
 from main.imports import *
 
 #=====================================================
@@ -46,7 +48,7 @@ class TelnetClient(TelnetBase):
     #-------------------------------------------------
     # Thread entry point
     def run(self):
-        self.message('Started %s application...' % (self.target))
+        self.message('Starting %s telnet session...' % (self.target))
         # Wait for commands
         while True:
             try:
@@ -58,7 +60,7 @@ class TelnetClient(TelnetBase):
                 continue
             
         self.close()
-        self.message("Telnet session for application %s terminated" % (self.target))
+        self.message("Telnet session for %s terminated" % (self.target))
     
     #-------------------------------------------------
     # Terminate the session  
@@ -69,7 +71,21 @@ class TelnetClient(TelnetBase):
 # Test code
 #==============================================================================================
 # Entry point
+def cb(msg):
+    print(msg)
+    
 if __name__ == '__main__':
     
-    client = TelnetClient("IP5VSwitch")
+    client = TelnetClient()
+    client.set_callback(cb)
+    if client.connect("IP5VSwitch"):
+        client.start()
+        sleep(10)
+        print("Execute")
+        client.execute( "cd /home/pi/Projects/IP5vSwitch/src/python", "$")
+        print("Done execute")
+        
+    else:
+        print("Connect fail!")
+    client.terminate()
     
