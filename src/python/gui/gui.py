@@ -110,7 +110,7 @@ class AppWindow(QMainWindow):
         self.__hpsdr_btn = QPushButton("Set")
         self.__setup_func(grid, hpsdr_label, self.__hpsdr_cb_on, self.__hpsdr_cb_off, self.__hpsdr_grp, self.__hpsdr_btn, self.__hpsdr_evnt, 3)
         
-        fcd_label = QLabel("FunCube Dongle Plus")
+        fcd_label = QLabel("FUNcube Dongle Pro+")
         self.__fcd_cb_on = QCheckBox("On")
         self.__fcd_cb_off = QCheckBox("Off")
         self.__fcd_grp = QButtonGroup()

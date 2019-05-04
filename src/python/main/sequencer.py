@@ -63,7 +63,18 @@ class Sequencer(threading.Thread):
         
         self.__complete = complete
         self.__message = message
-
+    #-------------------------------------------------
+    # Set message callback  
+    def set_msg_callback(self, message):
+        
+        self.__message = message
+        
+    #-------------------------------------------------
+    # Set complete callback  
+    def set_complete_callback(self, complete):
+        
+        self.__complete = complete
+        
     #-------------------------------------------------
     # Run the given sequence  
     def execute_seq(self, seq_name):

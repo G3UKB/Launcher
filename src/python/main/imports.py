@@ -60,6 +60,6 @@ from ip5v.ip5v import *
 from telnet.telnet_base import *
 from telnet.telnet_client import *
 #UI
-from gui.gui import *
+from gui.auto_gui import *
 #Main
 from main.sequencer import *

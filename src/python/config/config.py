@@ -23,16 +23,21 @@
 
 device_config = {
     "IP9258-1" : {
+        "UI" : False,
         "HOST" : '192.168.1.100',
         "USER" : 'admin',
         "PASSWORD" : '12345678'
     },
     "IP9258-2" : {
+        "UI" : False,
+        "LABEL" : "IP 5v Switch",
         "HOST" : '192.168.1.101',
         "USER" : 'admin',
         "PASSWORD" : '12345678'
     }, 
     "IP5VSwitch" : {
+        "UI" : True,
+        "LABEL" : "IP 5v Switch",
         "HOST" : '192.168.1.109',
         "PORT" : 8080,
         "USER" : 'pi',
@@ -40,20 +45,28 @@ device_config = {
         "STATE" : False
     },
     "Camera" : {
+        "UI" : True,
+        "LABEL" : "Camers",
         "HOST" : '192.168.1.108',
         "USER" : 'pi',
         "PASSWORD" : 'raspberry',
         "STATE" : False
     },
     "AntennaSwitch" : {
+        "UI" : True,
+        "LABEL" : "Antenna Switch",
         "HOST" : '192.168.1.178',
         "PORT" : 8888,
         "STATE" : False
     },
     "HPSDR" : {
+        "UI" : True,
+        "LABEL" : "HPSDR",
         "STATE" : False
     },
     "FCD" : {
+        "UI" : True,
+        "LABEL" : "FUNcube Dongle Pro+",
         "HOST" : '192.168.1.110',
         "USER" : 'pi',
         "PASSWORD" : 'raspberry',
