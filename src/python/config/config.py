@@ -46,7 +46,7 @@ device_config = {
     },
     "Camera" : {
         "UI" : True,
-        "LABEL" : "Camers",
+        "LABEL" : "Camera",
         "HOST" : '192.168.1.108',
         "USER" : 'pi',
         "PASSWORD" : 'raspberry',

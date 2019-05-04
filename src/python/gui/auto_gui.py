@@ -70,7 +70,7 @@ class AppWindow(QMainWindow):
         #-------------------------------------------------
         # Populate
         self.__widgets = {}
-        self.__setup_ui(sub_panel, main_grid)
+        self.__setup_ui(self.__seq, sub_panel, main_grid)
         
         # Add a logging area
         self.__log = QTextEdit()
@@ -85,19 +85,20 @@ class AppWindow(QMainWindow):
     
     #-------------------------------------------------
     # Setup the UI
-    def __setup_ui(self, panel, grid):
+    def __setup_ui(self, seq, panel, grid):
        
+        # Setup is dynamic from the device list
         line = 0
         for dev in device_config:
             if device_config[dev]["UI"]:
                 # Needs a UI entry
                 self.__widgets[dev] = []               
-                self.__widgets[dev][LABEL] = QLabel("IP 5v Switch")
-                self.__widgets[dev][CB_ON] = QCheckBox("On")
-                self.__widgets[dev][CB_OFF] = QCheckBox("Off")
-                self.__widgets[dev][CB_GRP] = QButtonGroup()
-                self.__widgets[dev][BUTTON] = QPushButton("Set")
-                self.__widgets[dev][EVNT_CLS] = EventCls(panel, dev, self.self.__widgets[dev])
+                self.__widgets[dev].append (QLabel(device_config[dev]["LABEL"]))
+                self.__widgets[dev].append (QCheckBox("On"))   
+                self.__widgets[dev].append (QCheckBox("Off"))
+                self.__widgets[dev].append (QButtonGroup())
+                self.__widgets[dev].append (QPushButton("Set"))
+                self.__widgets[dev].append (EventCls(seq, panel, dev, self.__widgets[dev]))
                 self.__setup_func(grid, self.__widgets[dev], line)
                 line += 1              
         
@@ -110,10 +111,10 @@ class AppWindow(QMainWindow):
         widgets[CB_OFF].setChecked(True)
         grid.addWidget(widgets[CB_OFF], line, 2)
         widgets[CB_GRP].setExclusive(True)
-        group.addButton(widgets[CB_ON])
-        group.setId(widgets[CB_ON], 0)
-        group.addButton(widgets[CB_OFF])
-        group.setId(widgets[CB_OFF], 1)
+        widgets[CB_GRP].addButton(widgets[CB_ON])
+        widgets[CB_GRP].setId(widgets[CB_ON], 0)
+        widgets[CB_GRP].addButton(widgets[CB_OFF])
+        widgets[CB_GRP].setId(widgets[CB_OFF], 1)
         widgets[BUTTON].clicked.connect(widgets[EVNT_CLS].event_proc)
         grid.addWidget(widgets[BUTTON], line, 3)
         self.__setStyle(widgets[LABEL], widgets[CB_ON], widgets[CB_OFF], widgets[BUTTON])
@@ -131,6 +132,7 @@ class AppWindow(QMainWindow):
     # Timer event
     def timer_evnt(self):
         # Process any messages
+        # These have writen from the main thread
         try:
             while True:
                 msg = self.__q.get_nowait()
@@ -146,6 +148,7 @@ class AppWindow(QMainWindow):
     # Callback procs
     # Message output
     def __message (self, message):
+        # Just add to the q for processing in the timer event
         self.__q.put(message + "\n")
 
 #-------------------------------------------------
@@ -153,7 +156,9 @@ class AppWindow(QMainWindow):
 # such that the whole UI is dynamic
 class EventCls:
     
-    def __init__(self, panel, dev_name, widgets):
+    def __init__(self, seq, panel, dev_name, widgets):
+        # The sequencer instance
+        self.__seq = seq
         # The main panel
         self.__panel = panel
         # The device name
