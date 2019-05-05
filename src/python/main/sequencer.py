@@ -48,7 +48,8 @@ class Sequencer(threading.Thread):
             "DEPENDENCY" : self.__dependent,
             "CONSTRAINT" : self.__constraint,
             "RELIANCE" : self.__reliance,
-            "SLEEP" : self.__sleep
+            "SLEEP" : self.__sleep,
+            "MSG" : self.__msg
         }
         self.__cwd = os.getcwd()
     
@@ -213,4 +214,9 @@ class Sequencer(threading.Thread):
     def __sleep(self, inst):
         sleep(inst[1])
         return True
-        
+    
+    #-------------------------------------------------
+    # Message command
+    def __msg(self, inst):
+        self.__message (inst[1])
+        return True    

@@ -72,6 +72,29 @@ device_config = {
         "PASSWORD" : 'raspberry',
         "STATE" : False
     },
+    "LoopTuner" : {
+        "UI" : True,
+        "LABEL" : "Loop Tuner",
+        "STATE" : False
+    },
+    "SatRot" : {
+        "UI" : True,
+        "LABEL" : "Az/El Rotator",
+        "STATE" : False
+    },
+    "VNA" : {
+        "UI" : True,
+        "LABEL" : "Mini VNA",
+        "STATE" : False
+    },
+    "LinuxDesktop" : {
+        "UI" : True,
+        "LABEL" : "Linux Desktop",
+        "HOST" : 'bob-desktop-linux',
+        "USER" : 'bob',
+        "PASSWORD" : 'x728461',
+        "STATE" : False
+    },
 }
 
 run_seq = {
@@ -195,5 +218,29 @@ run_seq = {
         ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""],
         # Close telnet
         ["TELNET_CLOSE", "FCDProPlus"]
-    ]
+    ],
+    "LoopTuner.ON" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "LoopTuner.OFF" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "SatRot.ON" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "SatRot.OFF" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "VNA.ON" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "VNA.OFF" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "LinuxDesktop.ON" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "LinuxDesktop.OFF" : [
+        ["MSG", "Not Implemented!"]
+    ],
 }

@@ -44,7 +44,7 @@ class AppWindow(QMainWindow):
         
         #-------------------------------------------------
         # Set title
-        self.setWindowTitle("RPi Launcher Application")
+        self.setWindowTitle("Launcher Application")
         # Set the back colour
         palette = QPalette()
         palette.setColor(QPalette.Background, QColor(59,59,59,255))
