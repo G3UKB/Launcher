@@ -131,7 +131,7 @@ run_seq = {
         ["TELNET", "Camera", "./vlc.sh 2>/dev/null", "$"],
         # Start the client VLC (with the correct stream?)
         ["WINDOWS_CMD", "CD", "", "C:\Program Files (x86)\VideoLAN\VLC"],
-        ["WINDOWS_CMD", "RUN_WITH_SHELL", "CameraVLC", "vlc.exe"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "CameraVLC", "vlc.exe rtsp://192.168.1.108:8554/"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "Camera.OFF" : [
