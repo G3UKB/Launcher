@@ -30,7 +30,6 @@ device_config = {
     },
     "IP9258-2" : {
         "UI" : False,
-        "LABEL" : "IP 5v Switch",
         "HOST" : '192.168.1.101',
         "USER" : 'admin',
         "PASSWORD" : '12345678'
@@ -120,8 +119,8 @@ run_seq = {
     "Camera.ON" : [
         # Ensure IP5VSwitch is on
         ["DEPENDENCY", "IP5VSwitch"],
-        # Turn on the light on IP-1 port 4
-        ["RELAY", "IP9258-1", True, 4],
+        # Turn on the light on IP-2 port 1
+        ["RELAY", "IP9258-2", True, 1],
         # Turn on the RPi hosting the Camera on port 2
         ["RELAY", "IP5VSwitch", True, 1],
         # Wait for boot to complete

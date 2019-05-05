@@ -40,9 +40,13 @@ class AppMain:
         # The one and only QT application
         self.__qtapp = QApplication([])
         
-        # Connect to the IP Main Switch(s)
-        # TBD make instances
-        connect(device_config["IP9258-1"]["HOST"], device_config["IP9258-1"]["USER"], device_config["IP9258-1"]["PASSWORD"])
+        # Create instances and connect to the IP Main Switch(s)
+        ip9258_1 = IP9258()
+        ip9258_1.connect(device_config["IP9258-1"]["HOST"], device_config["IP9258-1"]["USER"], device_config["IP9258-1"]["PASSWORD"])
+        addToCache("IP9258-1", ip9258_1)
+        ip9258_2 = IP9258()
+        ip9258_2.connect(device_config["IP9258-2"]["HOST"], device_config["IP9258-2"]["USER"], device_config["IP9258-2"]["PASSWORD"])
+        addToCache("IP9258-2", ip9258_2)
         
         # Create an Event for signalling between gui and sequencer threads
         self.__seq_wait_event = threading.Event()

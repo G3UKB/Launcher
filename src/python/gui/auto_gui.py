@@ -68,6 +68,10 @@ class AppWindow(QMainWindow):
         # Get sequencer instance
         self.__seq = getInstance("Sequencer")
         self.__seq.set_msg_callback(self.__message)
+        self.__ip_1 = getInstance("IP9258-1")
+        if self.__ip_1 != None: self.__ip_1.set_msg_callback(self.__message)
+        self.__ip_2 = getInstance("IP9258-1")
+        if self.__ip_2 != None: self.__ip_2.set_msg_callback(self.__message)
         
         #-------------------------------------------------
         # Populate
@@ -181,7 +185,7 @@ class EventCls:
         # The set of widgets for this device
         self.__widgets = widgets
         # Last state, True = On, False = Off
-        self.__lastState = None
+        self.__last_state = False
     
     #-------------------------------------------------
     # Event proc called from target button click   
@@ -195,12 +199,12 @@ class EventCls:
             self.__seq.execute_seq(self.__dev_name + ".ON")
             device_config[self.__dev_name]["STATE"] = True
             self.__wait_completion()
-            self.__lastState = True
+            self.__last_state = True
         else:
             self.__seq.execute_seq(self.__dev_name + ".OFF")
             device_config[self.__dev_name]["STATE"] = False
             self.__wait_completion()
-            self.__lastState = False
+            self.__last_state = False
             
     #-------------------------------------------------
     # Callback procs
