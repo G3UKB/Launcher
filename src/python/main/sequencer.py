@@ -33,9 +33,12 @@ class Sequencer(threading.Thread):
     
     #-------------------------------------------------
     # Constructor 
-    def __init__(self):
+    def __init__(self, evnt):
         # Init base
         threading.Thread.__init__(self)
+        
+        # Sync event
+        self.__evnt = evnt
         
         # Create a q for communication
         self.__q = queue.Queue()
@@ -49,6 +52,7 @@ class Sequencer(threading.Thread):
             "CONSTRAINT" : self.__constraint,
             "RELIANCE" : self.__reliance,
             "SLEEP" : self.__sleep,
+            "DIALOG" : self.__dialog,
             "MSG" : self.__msg
         }
         self.__cwd = os.getcwd()
@@ -215,6 +219,15 @@ class Sequencer(threading.Thread):
         sleep(inst[1])
         return True
     
+    #-------------------------------------------------
+    # Dialog command
+    def __dialog(self, inst):
+        self.__message (inst[1], True)
+        # Wait for the gui operation to complete
+        self.__evnt.wait()
+        self.__evnt.clear()
+        return True
+
     #-------------------------------------------------
     # Message command
     def __msg(self, inst):

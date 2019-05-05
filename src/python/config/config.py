@@ -91,8 +91,6 @@ device_config = {
         "UI" : True,
         "LABEL" : "Linux Desktop",
         "HOST" : 'bob-desktop-linux',
-        "USER" : 'bob',
-        "PASSWORD" : 'x728461',
         "STATE" : False
     },
 }
@@ -138,8 +136,8 @@ run_seq = {
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "Camera.OFF" : [
-        # Turn off the light on IP-1 port 4
-        ["RELAY", "IP9258-1", False, 4],
+        # Turn off the light on IP-2 port 1
+        ["RELAY", "IP9258-2", False, 1],
         # Shutdown the RPi
         ["TELNET", "Camera", "sudo shutdown -h now", "$"],
         # Wait for shutdown to complete
@@ -238,9 +236,20 @@ run_seq = {
         ["MSG", "Not Implemented!"]
     ],
     "LinuxDesktop.ON" : [
-        ["MSG", "Not Implemented!"]
+        # Turn on the computer on IP-1 port 4
+        ["RELAY", "IP9258-1", True, 4],
+        # Wait for the computer to boot. It's a slow machine!
+        ["SLEEP", 40],
+        # Start the VNC client application
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "vncviewer", "vncviewer %s:0" % (device_config["LinuxDesktop"]["HOST"])]
     ],
     "LinuxDesktop.OFF" : [
-        ["MSG", "Not Implemented!"]
+        # Turn off the computer on IP-1 port 4
+        ["DIALOG", "Please terminate your session and press OK when done."],
+        # Stop the VNC client application
+        ["WINDOWS_CMD", "TERM", "vncviewer", ""],
+        # Turn off the computer on IP-1 port 4
+        ["RELAY", "IP9258-1", False, 4],
+        
     ],
 }

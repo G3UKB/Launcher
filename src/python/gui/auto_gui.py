@@ -38,9 +38,11 @@ class AppWindow(QMainWindow):
     
     #-------------------------------------------------
     # Constructor
-    def __init__(self):
-        
+    def __init__(self, evnt):      
         super(AppWindow, self).__init__()
+        
+        # Sync event
+        self.__evnt = evnt
         
         #-------------------------------------------------
         # Set title
@@ -135,21 +137,34 @@ class AppWindow(QMainWindow):
         # These have writen from the main thread
         try:
             while True:
-                msg = self.__q.get_nowait()
-                self.__log.insertPlainText(msg)
-                self.__log.ensureCursorVisible()
+                msg, dialog = self.__q.get_nowait()
+                if dialog:
+                    # Display this as a model dialog
+                    msgbox = QMessageBox()
+                    msgbox.setText(msg)
+                    msgbox.setWindowTitle("User Action Required")
+                    msgbox.setStandardButtons(QMessageBox.Ok)
+                    msgbox.buttonClicked.connect(self.__msgbtn)
+                    msgbox.exec_()
+                else:
+                    self.__log.insertPlainText(msg)
+                    self.__log.ensureCursorVisible()
         except:
             pass
         
         # Next kick
         QTimer.singleShot(IDLE_TICKER, self.timer_evnt)
     
+    def __msgbtn(self,i):
+        # Let the sequencer continue
+        self.__evnt.set()
+        
     #-------------------------------------------------
     # Callback procs
     # Message output
-    def __message (self, message):
+    def __message (self, message, dialog = False):
         # Just add to the q for processing in the timer event
-        self.__q.put(message + "\n")
+        self.__q.put((message + "\n", dialog))
 
 #-------------------------------------------------
 # Each required event creates an instance of this class

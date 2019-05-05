@@ -40,16 +40,21 @@ class AppMain:
         # The one and only QT application
         self.__qtapp = QApplication([])
         
-        # Connect to the IP Main Switch
+        # Connect to the IP Main Switch(s)
+        # TBD make instances
         connect(device_config["IP9258-1"]["HOST"], device_config["IP9258-1"]["USER"], device_config["IP9258-1"]["PASSWORD"])
         
+        # Create an Event for signalling between gui and sequencer threads
+        self.__seq_wait_event = threading.Event()
+        self.__seq_wait_event.clear()
+        
         # Sequencer runs a set of commands to instantiate a system
-        sequencer = Sequencer()
+        sequencer = Sequencer(self.__seq_wait_event)
         addToCache("Sequencer", sequencer)
         sequencer.start()
         
         # Create the main window
-        self.__w = AppWindow()
+        self.__w = AppWindow(self.__seq_wait_event)
         # Make visible
         self.__w.show()
         
