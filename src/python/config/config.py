@@ -1,7 +1,7 @@
 #
 # config.py
 #
-# Configuration for IP 5V switch applications hosted on RPi's
+# Configuration for all supported devices
 # 
 # Copyright (C) 2019 by G3UKB Bob Cowdery
 # This program is free software; you can redistribute it and/or modify
@@ -38,6 +38,15 @@ device_config = {
         "UI" : True,
         "LABEL" : "IP 5v Switch",
         "HOST" : '192.168.1.109',
+        "PORT" : 8080,
+        "USER" : 'pi',
+        "PASSWORD" : 'raspberry',
+        "STATE" : False
+    },
+    "PortSwitch" : {
+        "UI" : True,
+        "LABEL" : "IP Port Switch",
+        "HOST" : '192.168.1.111',
         "PORT" : 8080,
         "USER" : 'pi',
         "PASSWORD" : 'raspberry',
@@ -102,9 +111,11 @@ run_seq = {
         ["SLEEP", 10],
         # Send command sequences to start the minimal HTML server on the RPi
         ["TELNET", "IP5VSwitch", "cd /home/pi/Projects/IP5vSwitch/src/python", "$"],
-        ["TELNET", "IP5VSwitch", "python3 ip5v_web_min.py 2>/dev/null", "$"]
+        # Start with the config for the ip5v switch
+        ["TELNET", "IP5VSwitch", "python3 ip5v_web_min.py conf/ip5v.conf 2>/dev/null", "$"]
     ],
     "IP5VSwitch.OFF" : [
+        ["RELIANCE", "PortSwitch"],
         ["RELIANCE", "Camera"],
         ["RELIANCE", "FCD"],
         # Shutdown the RPi
@@ -115,6 +126,29 @@ run_seq = {
         ["RELAY", "IP9258-1", False, 3],
         # Close telnet
         ["TELNET_CLOSE", "IP5VSwitch"]
+    ],
+    "PortSwitch.ON" : [
+        # Ensure IP5VSwitch is on
+        ["DEPENDENCY", "IP5VSwitch"],
+        # Turn on the RPi hosting the PortSwitch on port 1
+        ["RELAY", "IP5VSwitch", True, 0],
+        # Wait for boot to complete
+        ["SLEEP", 10],
+        # Send command sequences to start the minimal HTML server on the RPi
+        ["TELNET", "PortSwitch", "cd /home/pi/Projects/IP5vSwitch/src/python", "$"],
+        # Start with the config for the port switch
+        ["TELNET", "PortSwitch", "python3 ip5v_web_min.py conf/portsw.conf 2>/dev/null", "$"]
+    ],
+    "PortSwitch.OFF" : [
+        ["RELIANCE", "FCD"],
+        # Shutdown the RPi
+        ["TELNET", "PortSwitch", "sudo shutdown -h now", "$"],
+        # Wait for shutdown to complete
+        ["SLEEP", 10],
+        # Turn off the RPi hosting the PortSwitch on port 1
+        ["RELAY", "PortSwitch", False, 0],
+        # Close telnet
+        ["TELNET_CLOSE", "PortSwitch"]
     ],
     "Camera.ON" : [
         # Ensure IP5VSwitch is on
@@ -188,8 +222,8 @@ run_seq = {
         ["CONSTRAINT", "HPSDR"],
         # Ensure IP5VSwitch is on
         ["DEPENDENCY", "IP5VSwitch"],
-        # Turn on the RPi hosting the FCD on port 1
-        ["RELAY", "IP5VSwitch", True, 0],
+        # Turn on the RPi hosting the FCD on port 2
+        ["RELAY", "IP5VSwitch", True, 1],
         # Wait for boot to complete
         ["SLEEP", 10],
         # Start the FCD server process
@@ -208,8 +242,8 @@ run_seq = {
         ["TELNET", "FCDProPlus", "sudo shutdown -h now", "$"],
         # Wait for shutdown to complete
         ["SLEEP", 10],
-        # Turn off the RPi hosting the FCD on port 1
-        ["RELAY", "IP5VSwitch", False, 0],
+        # Turn off the RPi hosting the FCD on port 2
+        ["RELAY", "IP5VSwitch", False, 2],
         # Terminate applications
         ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""],
         ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""],

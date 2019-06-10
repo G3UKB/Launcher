@@ -181,9 +181,14 @@ class Sequencer(threading.Thread):
                 getInstance("IP9258-2").powerOff(device_config["IP9258-2"]["HOST"], inst[3])
         elif inst[1]== "IP5VSwitch":
             if inst[2]:
-                set_ip5v_relay(device_config["IP5VSwitch"]["HOST"], device_config["IP5VSwitch"]["PORT"], inst[3], "on")
+                set_web_relay(device_config["IP5VSwitch"]["HOST"], device_config["IP5VSwitch"]["PORT"], inst[3], "on")
             else:
-                set_ip5v_relay(device_config["IP5VSwitch"]["HOST"], device_config["IP5VSwitch"]["PORT"], inst[3], "off")
+                set_web_relay(device_config["IP5VSwitch"]["HOST"], device_config["IP5VSwitch"]["PORT"], inst[3], "off")
+        elif inst[1]== "PortSwitch":
+            if inst[2]:
+                set_web_relay(device_config["PortSwitch"]["HOST"], device_config["PortSwitch"]["PORT"], inst[3], "on")
+            else:
+                set_web_relay(device_config["PortSwitch"]["HOST"], device_config["PortSwitch"]["PORT"], inst[3], "off")
         return True
     
     #-------------------------------------------------
