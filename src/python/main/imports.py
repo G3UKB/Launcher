@@ -55,7 +55,7 @@ from config.config import *
 from common.instance_cache import *
 # IP Switches
 from ip9258.ip9258 import *
-from ip5v.ip5v import *
+from webrelay.webrelay import *
 #Telnet
 from telnet.telnet_base import *
 from telnet.telnet_client import *

@@ -80,19 +80,19 @@ device_config = {
         "PASSWORD" : 'raspberry',
         "STATE" : False
     },
-    "LoopTuner" : {
-        "UI" : True,
-        "LABEL" : "Loop Tuner",
-        "STATE" : False
-    },
-    "SatRot" : {
-        "UI" : True,
-        "LABEL" : "Az/El Rotator",
-        "STATE" : False
-    },
     "VNA" : {
         "UI" : True,
-        "LABEL" : "Mini VNA",
+        "LABEL" : "Mini VNA Tiny",
+        "STATE" : False
+    },
+    "AirSpy" : {
+        "UI" : True,
+        "LABEL" : "AirSpy Mini",
+        "STATE" : False
+    },
+    "WSPR Lite" : {
+        "UI" : True,
+        "LABEL" : "WSPR Lite",
         "STATE" : False
     },
     "LinuxDesktop" : {
@@ -249,18 +249,6 @@ run_seq = {
         ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""],
         # Close telnet
         ["TELNET_CLOSE", "FCDProPlus"]
-    ],
-    "LoopTuner.ON" : [
-        ["MSG", "Not Implemented!"]
-    ],
-    "LoopTuner.OFF" : [
-        ["MSG", "Not Implemented!"]
-    ],
-    "SatRot.ON" : [
-        ["MSG", "Not Implemented!"]
-    ],
-    "SatRot.OFF" : [
-        ["MSG", "Not Implemented!"]
     ],
     "VNA.ON" : [
         ["MSG", "Not Implemented!"]
