@@ -217,7 +217,7 @@ run_seq = {
         ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""],
         ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""]
     ],
-    "FCDProPlus.ON" : [
+    "FCD.ON" : [
         # Can't run this and the HPSDR at the same time
         ["CONSTRAINT", "HPSDR"],
         # Ensure IP5VSwitch is on
@@ -241,7 +241,7 @@ run_seq = {
         ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRLibEConsole", "python app_main.py manual"],
         ["WINDOWS_CMD", "CWD", "", ""]
     ],
-    "FCDProPlus.OFF" : [
+    "FCD.OFF" : [
         # Shutdown the RPi
         ["TELNET", "FCDProPlus", "sudo shutdown -h now", "$"],
         # Wait for shutdown to complete
