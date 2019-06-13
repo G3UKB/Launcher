@@ -90,7 +90,7 @@ device_config = {
         "LABEL" : "AirSpy Mini",
         "STATE" : False
     },
-    "WSPR Lite" : {
+    "WSPRLite" : {
         "UI" : True,
         "LABEL" : "WSPR Lite",
         "STATE" : False
@@ -110,9 +110,9 @@ run_seq = {
         # Wait for boot to complete
         ["SLEEP", 10],
         # Send command sequences to start the minimal HTML server on the RPi
-        ["TELNET", "IP5VSwitch", "cd /home/pi/Projects/IP5vSwitch/src/python", "$"],
+        ["TELNET", "IP5VSwitch", "cd /home/pi/Projects/RPiWebRelay/src/python", "$"],
         # Start with the config for the ip5v switch
-        ["TELNET", "IP5VSwitch", "python3 ip5v_web_min.py conf/ip5v.conf 2>/dev/null", "$"]
+        ["TELNET", "IP5VSwitch", "python3 webrelay_min.py conf/ip5v.conf 2>/dev/null", "$"]
     ],
     "IP5VSwitch.OFF" : [
         ["RELIANCE", "PortSwitch"],
@@ -135,9 +135,9 @@ run_seq = {
         # Wait for boot to complete
         ["SLEEP", 10],
         # Send command sequences to start the minimal HTML server on the RPi
-        ["TELNET", "PortSwitch", "cd /home/pi/Projects/IP5vSwitch/src/python", "$"],
+        ["TELNET", "PortSwitch", "cd /home/pi/Projects/RPiWebRelay/src/python", "$"],
         # Start with the config for the port switch
-        ["TELNET", "PortSwitch", "python3 ip5v_web_min.py conf/portsw.conf 2>/dev/null", "$"]
+        ["TELNET", "PortSwitch", "python3 webrelay_min.py conf/portsw.conf 2>/dev/null", "$"]
     ],
     "PortSwitch.OFF" : [
         ["RELIANCE", "FCD"],
@@ -222,10 +222,14 @@ run_seq = {
         ["CONSTRAINT", "HPSDR"],
         # Ensure IP5VSwitch is on
         ["DEPENDENCY", "IP5VSwitch"],
+        # Ensure PortSwitch is on
+        ["DEPENDENCY", "PortSwitch"],
         # Turn on the RPi hosting the FCD on port 2
         ["RELAY", "IP5VSwitch", True, 1],
         # Wait for boot to complete
         ["SLEEP", 10],
+        # Switch port 1 for the FCD to the antenna switch
+        ["RELAY", "PortSwitch", True, 0],
         # Start the FCD server process
         ["TELNET", "FCD", "cd /home/pi/FCD", "$"],
         ["TELNET", "FCD", "./SDRAlsaSrv.exe", "$"],
@@ -243,7 +247,9 @@ run_seq = {
         # Wait for shutdown to complete
         ["SLEEP", 10],
         # Turn off the RPi hosting the FCD on port 2
-        ["RELAY", "IP5VSwitch", False, 2],
+        ["RELAY", "IP5VSwitch", False, 1],
+        # Turn off the port switch on port 1
+        ["RELAY", "PortSwitch", False, 0],
         # Terminate applications
         ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""],
         ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""],
@@ -254,6 +260,18 @@ run_seq = {
         ["MSG", "Not Implemented!"]
     ],
     "VNA.OFF" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "AirSpy.ON" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "AirSpy.OFF" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "WSPRLite.ON" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "WSPRLite.OFF" : [
         ["MSG", "Not Implemented!"]
     ],
     "LinuxDesktop.ON" : [
