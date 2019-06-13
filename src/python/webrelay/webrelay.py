@@ -31,6 +31,8 @@ from main.imports import *
 # Its only function is to set/reset relays.
 # For the full interface use webrelay.py and a browser client.
 def set_web_relay(ip, port, relay, state):
+    print(ip, port, relay, state)
     urllib.request.urlopen('http://%s:%d/set_relay?relay=%d;state=%s' % (ip, port, relay, state))
+    print("Done")
     
     
