@@ -80,14 +80,20 @@ device_config = {
         "PASSWORD" : 'raspberry',
         "STATE" : False
     },
-    "VNA" : {
-        "UI" : True,
-        "LABEL" : "Mini VNA Tiny",
-        "STATE" : False
-    },
     "AirSpy" : {
         "UI" : True,
         "LABEL" : "AirSpy Mini",
+        "HOST" : '192.168.1.112',
+        "USER" : 'pi',
+        "PASSWORD" : 'raspberry',
+        "STATE" : False
+    },
+    "VNA" : {
+        "UI" : True,
+        "LABEL" : "Mini VNA Tiny",
+        "HOST" : '192.168.1.113',
+        "USER" : 'pi',
+        "PASSWORD" : 'raspberry',
         "STATE" : False
     },
     "WSPRLite" : {
@@ -256,17 +262,66 @@ run_seq = {
         # Close telnet
         ["TELNET_CLOSE", "FCDProPlus"]
     ],
-    "VNA.ON" : [
-        ["MSG", "Not Implemented!"]
-    ],
-    "VNA.OFF" : [
-        ["MSG", "Not Implemented!"]
-    ],
     "AirSpy.ON" : [
-        ["MSG", "Not Implemented!"]
+        # Ensure IP5VSwitch is on
+        ["DEPENDENCY", "IP5VSwitch"],
+        # Ensure PortSwitch is on
+        ["DEPENDENCY", "PortSwitch"],
+        # Turn on the RPi hosting the AirSpy on port 3
+        ["RELAY", "IP5VSwitch", True, 2],
+        # Wait for boot to complete
+        ["SLEEP", 10],
+        # Switch port 2 for the AirSpy to the antenna switch
+        ["RELAY", "PortSwitch", True, 1],
+        # Start the AirSpy server process
+        ["TELNET", "AirSpy", "cd /home/pi/airspy", "$"],
+        ["TELNET", "AirSpy", "./airspy", "$"],
+        # Start the SDR# client application
+        ["WINDOWS_CMD", "CD", "", "E:/RadioResources/SDR#"],
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "SDRSharp", "1668/SDRSharp.exe"],
     ],
     "AirSpy.OFF" : [
-        ["MSG", "Not Implemented!"]
+        # Shutdown the RPi
+        ["TELNET", "AirSpy", "sudo shutdown -h now", "$"],
+        # Wait for shutdown to complete
+        ["SLEEP", 10],
+        # Turn off the RPi hosting the AirSpy on port 3
+        ["RELAY", "IP5VSwitch", False, 2],
+        # Turn off the port switch on port 2
+        ["RELAY", "PortSwitch", False, 1],
+        # Terminate applications
+        ["WINDOWS_CMD", "TERM", "SDRSharp", ""],
+        # Close telnet
+        ["TELNET_CLOSE", "AirSpy"]
+    ],
+    "VNA.ON" : [
+        # Ensure IP5VSwitch is on
+        ["DEPENDENCY", "IP5VSwitch"],
+        # Ensure PortSwitch is on
+        ["DEPENDENCY", "PortSwitch"],
+        # Turn on the RPi hosting the VNA on port 4
+        ["RELAY", "IP5VSwitch", True, 3],
+        # Wait for boot to complete
+        ["SLEEP", 10],
+        # Switch port 3 for the VNA to the antenna switch
+        ["RELAY", "PortSwitch", True, 2],
+        # Start the VNA server process
+        ["TELNET", "VNA", "cd /home/pi/Projects/MiniVNA/python", "$"],
+        ["TELNET", "VNA", "python main.py", "$"],
+        # Start the windows application
+        ["MSG", "Client VNA application is to be implemented!"]
+    ],
+    "VNA.OFF" : [
+        # Shutdown the RPi
+        ["TELNET", "VNA", "sudo shutdown -h now", "$"],
+        # Wait for shutdown to complete
+        ["SLEEP", 10],
+        # Turn off the RPi hosting the VNA on port 4
+        ["RELAY", "IP5VSwitch", False, 3],
+        # Turn off the port switch on port 3
+        ["RELAY", "PortSwitch", False, 2],
+        # Close telnet
+        ["TELNET_CLOSE", "AirSpy"]
     ],
     "WSPRLite.ON" : [
         ["MSG", "Not Implemented!"]
@@ -289,6 +344,5 @@ run_seq = {
         ["WINDOWS_CMD", "TERM", "vncviewer", ""],
         # Turn off the computer on IP-1 port 4
         ["RELAY", "IP9258-1", False, 4],
-        
     ],
 }
