@@ -99,20 +99,23 @@ device_config = {
     "WSPRLite" : {
         "UI" : True,
         "LABEL" : "WSPR Lite",
+        "HOST" : '192.168.1.114',
+        "USER" : 'pi',
+        "PASSWORD" : 'raspberry',
         "STATE" : False
     },
-    "LinuxDesktop" : {
+    "ShackDesktop" : {
         "UI" : True,
-        "LABEL" : "Linux Desktop",
-        "HOST" : 'bob-desktop-linux',
+        "LABEL" : "Shack Desktop",
+        "HOST" : 'bob-desktop-win',
         "STATE" : False
     },
 }
 
 run_seq = {
     "IP5VSwitch.ON" : [
-        # Turn on the IP5V RPi on IP-1 port 3
-        ["RELAY", "IP9258-1", True, 3],
+        # Turn on the IP5V RPi on IP-2 port 2
+        ["RELAY", "IP9258-2", True, 1],
         # Wait for boot to complete
         ["SLEEP", 10],
         # Send command sequences to start the minimal HTML server on the RPi
@@ -122,22 +125,25 @@ run_seq = {
     ],
     "IP5VSwitch.OFF" : [
         ["RELIANCE", "PortSwitch"],
-        ["RELIANCE", "Camera"],
         ["RELIANCE", "FCD"],
+        ["RELIANCE", "AirSpy"],
+        ["RELIANCE", "VNA"],
+        ["RELIANCE", "WSPRLite"],
+        ["RELIANCE", "Camera"],
         # Shutdown the RPi
         ["TELNET", "IP5VSwitch", "sudo shutdown -h now", "$"],
         # Wait for shutdown to complete
         ["SLEEP", 10],
-        # Turn off the IP5V RPi on IP-1 port 3
-        ["RELAY", "IP9258-1", False, 3],
+        # Turn off the IP5V RPi on IP-2 port 2
+        ["RELAY", "IP9258-2", False, 2],
         # Close telnet
         ["TELNET_CLOSE", "IP5VSwitch"]
     ],
     "PortSwitch.ON" : [
         # Ensure IP5VSwitch is on
         ["DEPENDENCY", "IP5VSwitch"],
-        # Turn on the RPi hosting the PortSwitch on port 1
-        ["RELAY", "IP5VSwitch", True, 0],
+        # Turn on the RPi hosting the PortSwitch on port 7
+        ["RELAY", "IP5VSwitch", True, 6],
         # Wait for boot to complete
         ["SLEEP", 10],
         # Send command sequences to start the minimal HTML server on the RPi
@@ -146,13 +152,16 @@ run_seq = {
         ["TELNET", "PortSwitch", "python3 webrelay_min.py conf/portsw.conf 2>/dev/null", "$"]
     ],
     "PortSwitch.OFF" : [
+        ["RELIANCE", "VNA"],
+        ["RELIANCE", "WSPRLite"],
+        ["RELIANCE", "AirSpy"],
         ["RELIANCE", "FCD"],
         # Shutdown the RPi
         ["TELNET", "PortSwitch", "sudo shutdown -h now", "$"],
         # Wait for shutdown to complete
         ["SLEEP", 10],
-        # Turn off the RPi hosting the PortSwitch on port 1
-        ["RELAY", "PortSwitch", False, 0],
+        # Turn off the RPi hosting the PortSwitch on port 7
+        ["RELAY", "IP5VSwitch", False, 6],
         # Close telnet
         ["TELNET_CLOSE", "PortSwitch"]
     ],
@@ -160,9 +169,9 @@ run_seq = {
         # Ensure IP5VSwitch is on
         ["DEPENDENCY", "IP5VSwitch"],
         # Turn on the light on IP-2 port 1
-        ["RELAY", "IP9258-2", True, 1],
-        # Turn on the RPi hosting the Camera on port 2
-        ["RELAY", "IP5VSwitch", True, 1],
+        ["RELAY", "IP9258-2", True, 0],
+        # Turn on the RPi hosting the Camera on port 8
+        ["RELAY", "IP5VSwitch", True, 7],
         # Wait for boot to complete
         ["SLEEP", 10],
         # Start the camera stream
@@ -181,15 +190,15 @@ run_seq = {
         ["TELNET", "Camera", "sudo shutdown -h now", "$"],
         # Wait for shutdown to complete
         ["SLEEP", 10],
-        # Turn off the RPi hosting the Camera on port 2
-        ["RELAY", "IP5VSwitch", False, 1],
+        # Turn off the RPi hosting the Camera on port 8
+        ["RELAY", "IP5VSwitch", False, 7],
         # Terminate application
         ["WINDOWS_CMD", "TERM", "CameraVLC", ""],
         # Close telnet
         ["TELNET_CLOSE", "Camera"]
     ],
     "AntennaSwitch.ON" : [
-        # Turn on the Antenna Switch RPi on port 1
+        # Turn on the Antenna Switch unit on port 1
         ["RELAY", "IP9258-1", True, 1],
         # Wait for boot to complete
         ["SLEEP", 1],
@@ -230,12 +239,12 @@ run_seq = {
         ["DEPENDENCY", "IP5VSwitch"],
         # Ensure PortSwitch is on
         ["DEPENDENCY", "PortSwitch"],
-        # Turn on the RPi hosting the FCD on port 2
-        ["RELAY", "IP5VSwitch", True, 1],
+        # Turn on the RPi hosting the FCD on port 5
+        ["RELAY", "IP5VSwitch", True, 4],
         # Wait for boot to complete
         ["SLEEP", 10],
-        # Switch port 1 for the FCD to the antenna switch
-        ["RELAY", "PortSwitch", True, 0],
+        # Switch port 4 for the FCD to the antenna switch
+        ["RELAY", "PortSwitch", True, 3],
         # Start the FCD server process
         ["TELNET", "FCD", "cd /home/pi/FCD", "$"],
         ["TELNET", "FCD", "./SDRAlsaSrv.exe", "$"],
@@ -252,10 +261,10 @@ run_seq = {
         ["TELNET", "FCDProPlus", "sudo shutdown -h now", "$"],
         # Wait for shutdown to complete
         ["SLEEP", 10],
-        # Turn off the RPi hosting the FCD on port 2
-        ["RELAY", "IP5VSwitch", False, 1],
-        # Turn off the port switch on port 1
-        ["RELAY", "PortSwitch", False, 0],
+        # Turn off the RPi hosting the FCD on port 5
+        ["RELAY", "IP5VSwitch", False, 4],
+        # Turn off the port switch on port 4
+        ["RELAY", "PortSwitch", False, 3],
         # Terminate applications
         ["WINDOWS_CMD", "TERM", "SDRLibEConnector", ""],
         ["WINDOWS_CMD", "TERM", "SDRLibEConsole", ""],
@@ -267,12 +276,12 @@ run_seq = {
         ["DEPENDENCY", "IP5VSwitch"],
         # Ensure PortSwitch is on
         ["DEPENDENCY", "PortSwitch"],
-        # Turn on the RPi hosting the AirSpy on port 3
-        ["RELAY", "IP5VSwitch", True, 2],
+        # Turn on the RPi hosting the AirSpy on port 4
+        ["RELAY", "IP5VSwitch", True, 3],
         # Wait for boot to complete
         ["SLEEP", 10],
-        # Switch port 2 for the AirSpy to the antenna switch
-        ["RELAY", "PortSwitch", True, 1],
+        # Switch port 3 for the AirSpy to the antenna switch
+        ["RELAY", "PortSwitch", True, 2],
         # Start the AirSpy server process
         ["TELNET", "AirSpy", "cd /home/pi/airspy", "$"],
         ["TELNET", "AirSpy", "./airspy", "$"],
@@ -285,10 +294,10 @@ run_seq = {
         ["TELNET", "AirSpy", "sudo shutdown -h now", "$"],
         # Wait for shutdown to complete
         ["SLEEP", 10],
-        # Turn off the RPi hosting the AirSpy on port 3
-        ["RELAY", "IP5VSwitch", False, 2],
-        # Turn off the port switch on port 2
-        ["RELAY", "PortSwitch", False, 1],
+        # Turn off the RPi hosting the AirSpy on port 4
+        ["RELAY", "IP5VSwitch", False, 3],
+        # Turn off the port switch on port 3
+        ["RELAY", "PortSwitch", False, 2],
         # Terminate applications
         ["WINDOWS_CMD", "TERM", "SDRSharp", ""],
         # Close telnet
@@ -299,29 +308,31 @@ run_seq = {
         ["DEPENDENCY", "IP5VSwitch"],
         # Ensure PortSwitch is on
         ["DEPENDENCY", "PortSwitch"],
-        # Turn on the RPi hosting the VNA on port 4
-        ["RELAY", "IP5VSwitch", True, 3],
+        # Turn on the RPi hosting the VNA on port 1
+        ["RELAY", "IP5VSwitch", True, 0],
         # Wait for boot to complete
         ["SLEEP", 10],
-        # Switch port 3 for the VNA to the antenna switch
-        ["RELAY", "PortSwitch", True, 2],
+        # Switch port 1 for the VNA to the antenna switch
+        ["RELAY", "PortSwitch", True, 0],
         # Start the VNA server process
-        ["TELNET", "VNA", "cd /home/pi/Projects/MiniVNA/python", "$"],
-        ["TELNET", "VNA", "python main.py", "$"],
-        # Start the windows application
-        ["MSG", "Client VNA application is to be implemented!"]
+        ["TELNET", "VNA", "cd /home/pi/Projects/MiniVNA/VNAJ", "$"],
+        ["TELNET", "VNA", "java -jar vnaj.3.3.1", "$"],
+        # Start the VNC client application
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "vncviewer", "vncviewer %s:0" % (device_config["VNA"]["HOST"])]
     ],
     "VNA.OFF" : [
         # Shutdown the RPi
         ["TELNET", "VNA", "sudo shutdown -h now", "$"],
         # Wait for shutdown to complete
         ["SLEEP", 10],
-        # Turn off the RPi hosting the VNA on port 4
-        ["RELAY", "IP5VSwitch", False, 3],
-        # Turn off the port switch on port 3
-        ["RELAY", "PortSwitch", False, 2],
+        # Turn off the RPi hosting the VNA on port 1
+        ["RELAY", "IP5VSwitch", False, 0],
+        # Turn off the port switch on port 1
+        ["RELAY", "PortSwitch", False, 0],
         # Close telnet
         ["TELNET_CLOSE", "AirSpy"]
+        # Stop the VNC client application
+        ["WINDOWS_CMD", "TERM", "vncviewer", ""],
     ],
     "WSPRLite.ON" : [
         ["MSG", "Not Implemented!"]
@@ -329,15 +340,15 @@ run_seq = {
     "WSPRLite.OFF" : [
         ["MSG", "Not Implemented!"]
     ],
-    "LinuxDesktop.ON" : [
+    "ShackDesktop.ON" : [
         # Turn on the computer on IP-1 port 4
         ["RELAY", "IP9258-1", True, 4],
         # Wait for the computer to boot. It's a slow machine!
         ["SLEEP", 40],
         # Start the VNC client application
-        ["WINDOWS_CMD", "RUN_WITH_SHELL", "vncviewer", "vncviewer %s:0" % (device_config["LinuxDesktop"]["HOST"])]
+        ["WINDOWS_CMD", "RUN_WITH_SHELL", "vncviewer", "vncviewer %s:0" % (device_config["ShackDesktop"]["HOST"])]
     ],
-    "LinuxDesktop.OFF" : [
+    "ShackDesktop.OFF" : [
         # Turn off the computer on IP-1 port 4
         ["DIALOG", "Please terminate your session and press OK when done."],
         # Stop the VNC client application
