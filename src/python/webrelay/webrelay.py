@@ -30,9 +30,10 @@ from main.imports import *
 # This uses the webrelay_min.py Cherrypy server.
 # Its only function is to set/reset relays.
 # For the full interface use webrelay.py and a browser client.
+# Note sequencer uses 1-n but lower level uses 0-(n-1)
 def set_web_relay(ip, port, relay, state):
     print(ip, port, relay, state)
-    urllib.request.urlopen('http://%s:%d/set_relay?relay=%d;state=%s' % (ip, port, relay, state))
+    urllib.request.urlopen('http://%s:%d/set_relay?relay=%d;state=%s' % (ip, port, relay-1, state))
     print("Done")
     
     
