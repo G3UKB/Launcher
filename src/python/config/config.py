@@ -115,7 +115,7 @@ device_config = {
 run_seq = {
     "IP5VSwitch.ON" : [
         # Turn on the IP5V RPi on IP-2 port 2
-        ["RELAY", "IP9258-2", True, 1],
+        ["RELAY", "IP9258-2", True, 2],
         # Wait for boot to complete
         ["SLEEP", 10],
         # Send command sequences to start the minimal HTML server on the RPi
@@ -330,7 +330,7 @@ run_seq = {
         # Turn off the port switch on port 1
         ["RELAY", "PortSwitch", False, 1],
         # Close telnet
-        ["TELNET_CLOSE", "AirSpy"]
+        ["TELNET_CLOSE", "AirSpy"],
         # Stop the VNC client application
         ["WINDOWS_CMD", "TERM", "vncviewer", ""],
     ],
