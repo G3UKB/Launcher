@@ -57,6 +57,7 @@ from common.instance_cache import *
 from ip9258.ip9258 import *
 from webrelay.webrelay import *
 #Telnet
+from telnet.wait_device import *
 from telnet.telnet_base import *
 from telnet.telnet_client import *
 #UI

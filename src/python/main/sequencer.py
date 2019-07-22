@@ -45,6 +45,7 @@ class Sequencer(threading.Thread):
       
         self.__dispatch_table = {
             "WINDOWS_CMD" : self.__win_cmd,
+            "WAIT_DEVICE" : self.__wait_device,
             "TELNET" : self.__telnet,
             "TELNET_CLOSE" : self.__telnet_close,
             "RELAY" : self.__relay,
@@ -140,6 +141,15 @@ class Sequencer(threading.Thread):
                 
         return True
     
+    #-------------------------------------------------
+    # Wait device command
+    def __wait_device(self, inst):
+        if wait_device(inst[1], self.__message):
+            # Device on-line
+            return True
+        else:
+            return False
+        
     #-------------------------------------------------
     # Telnet command
     def __telnet(self, inst):

@@ -117,7 +117,7 @@ run_seq = {
         # Turn on the IP5V RPi on IP-2 port 2
         ["RELAY", "IP9258-2", True, 2],
         # Wait for boot to complete
-        ["SLEEP", 10],
+        ["WAIT_DEVICE", "IP5VSwitch"],
         # Send command sequences to start the minimal HTML server on the RPi
         ["TELNET", "IP5VSwitch", "cd /home/pi/Projects/RPiWebRelay/src/python", "$"],
         # Start with the config for the ip5v switch
@@ -145,7 +145,7 @@ run_seq = {
         # Turn on the RPi hosting the PortSwitch on port 7
         ["RELAY", "IP5VSwitch", True, 7],
         # Wait for boot to complete
-        ["SLEEP", 10],
+        ["WAIT_DEVICE", "PortSwitch"],
         # Send command sequences to start the minimal HTML server on the RPi
         ["TELNET", "PortSwitch", "cd /home/pi/Projects/RPiWebRelay/src/python", "$"],
         # Start with the config for the port switch
@@ -173,7 +173,7 @@ run_seq = {
         # Turn on the RPi hosting the Camera on port 8
         ["RELAY", "IP5VSwitch", True, 8],
         # Wait for boot to complete
-        ["SLEEP", 10],
+        ["WAIT_DEVICE", "Camera"],
         # Start the camera stream
         ["TELNET", "Camera", "cd /home/pi/VLC", "$"],
         ["SLEEP", 1],
@@ -242,7 +242,7 @@ run_seq = {
         # Turn on the RPi hosting the FCD on port 5
         ["RELAY", "IP5VSwitch", True, 5],
         # Wait for boot to complete
-        ["SLEEP", 10],
+        ["WAIT_DEVICE", "FCD"],
         # Switch port 4 for the FCD to the antenna switch
         ["RELAY", "PortSwitch", True, 4],
         # Start the FCD server process
@@ -279,7 +279,7 @@ run_seq = {
         # Turn on the RPi hosting the AirSpy on port 4
         ["RELAY", "IP5VSwitch", True, 4],
         # Wait for boot to complete
-        ["SLEEP", 10],
+        ["WAIT_DEVICE", "AirSpy"],
         # Switch port 3 for the AirSpy to the antenna switch
         ["RELAY", "PortSwitch", True, 3],
         # Start the AirSpy server process
@@ -311,7 +311,7 @@ run_seq = {
         # Turn on the RPi hosting the VNA on port 1
         ["RELAY", "IP5VSwitch", True, 1],
         # Wait for boot to complete
-        ["SLEEP", 10],
+        ["WAIT_DEVICE", "VNA"],
         # Switch port 1 for the VNA to the antenna switch
         ["RELAY", "PortSwitch", True, 1],
         # Start the VNA server process
