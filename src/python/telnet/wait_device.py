@@ -36,8 +36,8 @@ def wait_device(target, callback):
     host = config["HOST"]
     port = 23
     # We wait for 30 1s timeouts before giving up
-    timeout = 1
-    counter = 30
+    timeout = 2
+    counter = 15
     success = False
     while True:
         try:
@@ -47,10 +47,11 @@ def wait_device(target, callback):
             break
         except socket.timeout:
             if counter <= 0:
-                callback ('**ERROR** - Device %s failed to come on-line!')
+                callback ('**ERROR** - Device %s failed to come on-line!' % (target))
                 break
             else:
                 counter -= 1
+                callback('.', CRLF=False)
         except Exception as e:
             callback ('**ERROR** - Exception from wait_device [%s][%s]' % (str(e), traceback.format_exc()))
             break

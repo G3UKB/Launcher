@@ -316,7 +316,7 @@ run_seq = {
         ["RELAY", "PortSwitch", True, 1],
         # Start the VNA server process
         ["TELNET", "VNA", "cd /home/pi/Projects/MiniVNA/VNAJ", "$"],
-        ["TELNET", "VNA", "java -jar vnaj.3.3.1", "$"],
+        ["TELNET", "VNA", "java -jar vnaJ.3.3.2.jar", "$"],
         # Start the VNC client application
         ["WINDOWS_CMD", "RUN_WITH_SHELL", "vncviewer", "vncviewer %s:0" % (device_config["VNA"]["HOST"])]
     ],

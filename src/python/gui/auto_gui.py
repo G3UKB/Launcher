@@ -166,9 +166,12 @@ class AppWindow(QMainWindow):
     #-------------------------------------------------
     # Callback procs
     # Message output
-    def __message (self, message, dialog = False):
+    def __message (self, message, dialog = False, CRLF = True):
         # Just add to the q for processing in the timer event
-        self.__q.put((message + "\n", dialog))
+        if CRLF:
+            self.__q.put((message + "\n", dialog))
+        else:
+            self.__q.put((message, dialog))
 
 #-------------------------------------------------
 # Each required event creates an instance of this class
