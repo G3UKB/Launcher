@@ -104,6 +104,14 @@ device_config = {
         "PASSWORD" : 'raspberry',
         "STATE" : False
     },
+    "LPF" : {
+        "UI" : True,
+        "LABEL" : "LPF",
+        "HOST" : '192.168.1.115',
+        "USER" : 'pi',
+        "PASSWORD" : 'raspberry',
+        "STATE" : False
+    },
     "ShackDesktop" : {
         "UI" : True,
         "LABEL" : "Shack Desktop",
@@ -335,9 +343,38 @@ run_seq = {
         ["WINDOWS_CMD", "TERM", "vncviewer", ""],
     ],
     "WSPRLite.ON" : [
-        ["MSG", "Not Implemented!"]
+        # Ensure IP5VSwitch is on
+        ["DEPENDENCY", "IP5VSwitch"],
+        # Ensure LPF is on
+        ["DEPENDENCY", "LPF"],
+        # Turn on the RPi hosting the WSPRLite on port 3
+        ["RELAY", "IP5VSwitch", True, 3],
+        # Wait for boot to complete
+        ["WAIT_DEVICE", "WSPRLite"],
+        # Send command sequences to start the server on the RPi
+        ["TELNET", "WSPRLite", "cd /home/pi/Projects/WSPRLite/src/python", "$"],
+        ["TELNET", "WSPRLite", "python3 main.py 2>/dev/null", "$"]
     ],
     "WSPRLite.OFF" : [
+        ["MSG", "Not Implemented!"]
+    ],
+    "LPF.ON" : [
+        # Ensure IP5VSwitch is on
+        ["DEPENDENCY", "IP5VSwitch"],
+        # Ensure PortSwitch is on
+        ["DEPENDENCY", "PortSwitch"],
+        # Turn on the RPi hosting the LPF on port 2
+        ["RELAY", "LPF", True, 2],
+        # Wait for boot to complete
+        ["WAIT_DEVICE", "LPF"],
+        # Turn the port switch to port 2
+        ["RELAY", "PortSwitch", False, 2],
+        # Send command sequences to start the minimal HTML server on the RPi
+        ["TELNET", "LPF", "cd /home/pi/Projects/RPiWebRelay/src/python", "$"],
+        # Start with the config for the port switch
+        ["TELNET", "LPF", "python3 webrelay_min.py conf/lpf.conf 2>/dev/null", "$"]
+    ],
+    "LPF.OFF" : [
         ["MSG", "Not Implemented!"]
     ],
     "ShackDesktop.ON" : [
