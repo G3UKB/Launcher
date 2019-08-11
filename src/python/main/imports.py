@@ -28,7 +28,11 @@
 import os,sys
 import traceback
 import pickle
-from subprocess import Popen, CREATE_NEW_CONSOLE
+from sys import platform
+if platform == 'linux' or platform == 'linux2':
+    from subprocess import Popen
+else:
+    from subprocess import Popen, CREATE_NEW_CONSOLE
 import urllib
 from urllib import request
 import telnetlib
