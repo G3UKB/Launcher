@@ -338,7 +338,7 @@ run_seq = {
         # Turn off the port switch on port 1
         ["RELAY", "PortSwitch", False, 1],
         # Close telnet
-        ["TELNET_CLOSE", "AirSpy"],
+        ["TELNET_CLOSE", "VNA"],
         # Stop the VNC client application
         ["WINDOWS_CMD", "TERM", "vncviewer", ""],
     ],
@@ -356,7 +356,14 @@ run_seq = {
         ["TELNET", "WSPRLite", "python3 main.py 2>/dev/null", "$"]
     ],
     "WSPRLite.OFF" : [
-        ["MSG", "Not Implemented!"]
+        # Shutdown the RPi
+        ["TELNET", "WSPRLite", "sudo shutdown -h now", "$"],
+        # Wait for shutdown to complete
+        ["SLEEP", 10],
+        # Turn off the RPi hosting the WSPRLite on port 3
+        ["RELAY", "IP5VSwitch", False, 3],
+        # Close telnet
+        ["TELNET_CLOSE", "WSPRLite"],
     ],
     "LPF.ON" : [
         # Ensure IP5VSwitch is on
@@ -368,14 +375,23 @@ run_seq = {
         # Wait for boot to complete
         ["WAIT_DEVICE", "LPF"],
         # Turn the port switch to port 2
-        ["RELAY", "PortSwitch", False, 2],
+        ["RELAY", "PortSwitch", True, 2],
         # Send command sequences to start the minimal HTML server on the RPi
         ["TELNET", "LPF", "cd /home/pi/Projects/RPiWebRelay/src/python", "$"],
         # Start with the config for the port switch
         ["TELNET", "LPF", "python3 webrelay_min.py conf/lpf.conf 2>/dev/null", "$"]
     ],
     "LPF.OFF" : [
-        ["MSG", "Not Implemented!"]
+        # Shutdown the RPi
+        ["TELNET", "LPF", "sudo shutdown -h now", "$"],
+        # Wait for shutdown to complete
+        ["SLEEP", 10],
+        # Turn off the RPi hosting the LPF on port 2
+        ["RELAY", "IP5VSwitch", False, 2],
+        # Turn off the port switch on port 2
+        ["RELAY", "PortSwitch", False, 2],
+        # Close telnet
+        ["TELNET_CLOSE", "LPF"],
     ],
     "ShackDesktop.ON" : [
         # Turn on the computer on IP-1 port 4
