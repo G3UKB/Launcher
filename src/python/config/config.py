@@ -352,8 +352,12 @@ run_seq = {
         # Wait for boot to complete
         ["WAIT_DEVICE", "WSPRLite"],
         # Send command sequences to start the server on the RPi
-        ["TELNET", "WSPRLite", "cd /home/pi/Projects/WSPRLite/src/python", "$"],
+        ["TELNET", "WSPRLite", "cd /home/pi/Projects/WSPRLite/src/python/server", "$"],
         ["TELNET", "WSPRLite", "python3 main.py 2>/dev/null", "$"]
+        # Start the client program
+        ["WINDOWS_CMD", "CD", "", "E:\Projects\WSPRLite\trunk\python\client"],
+        ["WINDOWS_CMD", "RUN_NO_SHELL", "WSPRLiteApp", "python app_main.py"],
+        ["WINDOWS_CMD", "CWD", "", ""]
     ],
     "WSPRLite.OFF" : [
         # Shutdown the RPi
@@ -364,6 +368,8 @@ run_seq = {
         ["RELAY", "IP5VSwitch", False, 3],
         # Close telnet
         ["TELNET_CLOSE", "WSPRLite"],
+        # Terminate application
+        ["WINDOWS_CMD", "TERM", "WSPRLiteApp", ""]
     ],
     "LPF.ON" : [
         # Ensure IP5VSwitch is on
