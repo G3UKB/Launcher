@@ -129,7 +129,10 @@ class Sequencer(threading.Thread):
             addToCache(name, prog)
         elif cmd == 'RUN_WITH_SHELL':
             # Run command in a new shell
-            prog = Popen(path, creationflags=CREATE_NEW_CONSOLE, shell=False)
+            if platform == 'linux' or platform == 'linux2':
+                prog = Popen(path, shell=False)
+            else:
+                prog = Popen(path, creationflags=CREATE_NEW_CONSOLE, shell=False)
             addToCache(name, prog)
         elif cmd == 'TERM':
             # Get Popen object
